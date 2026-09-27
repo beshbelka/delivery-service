@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Котобус — доставка по городу</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<!-- Header -->
+<header class="header">
+    <div class="container header__content">
+        <a href="#home" class="logo">
+            <span class="logo__mark">🐱</span>
+            <span>Котобус</span>
+        </a>
+
+        <nav class="nav">
+            <a href="#services" class="nav__link">Услуги</a>
+            <a href="#how" class="nav__link">Как это работает</a>
+            <a href="#about" class="nav__link">О нас</a>
+            <a href="#contact" class="nav__link">Контакты</a>
+        </nav>
+
+        <div class="header__actions">
+            <a href="#contact" class="nav__link nav__link--muted">Войти</a>
+            <a href="#order" class="btn btn--primary">Заказать</a>
+        </div>
+    </div>
+</header>
+
+<!-- Hero -->
+<section class="hero" id="home">
+    <div class="container hero__content">
+        <div class="hero__text">
+            <span class="hero__badge">Доставка за 30 минут</span>
+            <h1 class="hero__title">Всё, что нужно —<br>уже мчится к вам</h1>
+            <p class="hero__subtitle">Еда, продукты, посылки и цветы. Курьер приедет быстрее, чем закипит чайник.</p>
+
+            <div class="search">
+                <input type="text" placeholder="Что доставить?" class="search__input">
+                <button class="btn btn--primary search__btn">Найти</button>
+            </div>
+
+            <div class="tags">
+                <button class="tag tag--mint tag--active">🍕 Еда</button>
+                <button class="tag tag--peach">🛒 Продукты</button>
+                <button class="tag tag--lavender">📦 Посылки</button>
+                <button class="tag tag--butter">💐 Цветы</button>
+                <button class="tag tag--sky">💊 Аптека</button>
+            </div>
+        </div>
+
+        <div class="hero__aside">
+            <div class="hero__card hero__card--mint">
+                <span class="hero__card-label">Среднее время</span>
+                <span class="hero__card-value">28 мин</span>
+            </div>
+            <div class="hero__card hero__card--peach">
+                <span class="hero__card-label">Оценка</span>
+                <span class="hero__card-value">4.9 ★</span>
+            </div>
+            <div class="hero__card hero__card--lavender">
+                <span class="hero__card-label">Курьеров онлайн</span>
+                <span class="hero__card-value">142</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services -->
+<section class="services" id="services">
+    <div class="container">
+        <h2 class="section-title">Услуги</h2>
+
+        <div class="services__grid">
+            <div class="service service--mint">
+                <span class="service__icon">🍕</span>
+                <h3 class="service__title">Еда из ресторанов</h3>
+                <p class="service__text">Горячей и вовремя — из любимых мест города</p>
+                <span class="service__price">от 149 ₽</span>
+            </div>
+            <div class="service service--peach">
+                <span class="service__icon">🛒</span>
+                <h3 class="service__title">Продукты</h3>
+                <p class="service__text">Купим и привезём всё из магазина у дома</p>
+                <span class="service__price">от 99 ₽</span>
+            </div>
+            <div class="service service--lavender">
+                <span class="service__icon">📦</span>
+                <h3 class="service__title">Посылки и документы</h3>
+                <p class="service__text">По городу и области, с отслеживанием</p>
+                <span class="service__price">от 199 ₽</span>
+            </div>
+            <div class="service service--butter">
+                <span class="service__icon">💐</span>
+                <h3 class="service__title">Цветы и подарки</h3>
+                <p class="service__text">Бережно и точно в срок</p>
+                <span class="service__price">от 249 ₽</span>
+            </div>
+            <div class="service service--sky">
+                <span class="service__icon">💊</span>
+                <h3 class="service__title">Аптека</h3>
+                <p class="service__text">Лекарства и витамины без ожидания</p>
+                <span class="service__price">от 129 ₽</span>
+            </div>
+            <div class="service service--rose">
+                <span class="service__icon">🚚</span>
+                <h3 class="service__title">Грузоперевозки</h3>
+                <p class="service__text">Мебель и крупногабарит — аккуратно</p>
+                <span class="service__price">от 499 ₽</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How -->
+<section class="how" id="how">
+    <div class="container">
+        <h2 class="section-title">Как это работает</h2>
+
+        <div class="how__grid">
+            <div class="how__step">
+                <span class="how__num">01</span>
+                <h3 class="how__title">Заявка</h3>
+                <p class="how__text">Выберите услугу и укажите адрес</p>
+            </div>
+            <div class="how__step">
+                <span class="how__num">02</span>
+                <h3 class="how__title">Курьер в пути</h3>
+                <p class="how__text">Следите за заказом на карте</p>
+            </div>
+            <div class="how__step">
+                <span class="how__num">03</span>
+                <h3 class="how__title">Получение</h3>
+                <p class="how__text">Оплата картой или наличными</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About -->
+<section class="about" id="about">
+    <div class="container">
+        <h2 class="section-title">Почему Котобус</h2>
+
+        <div class="about__grid">
+            <div class="about__item about__item--mint">
+                <span class="about__icon">⚡</span>
+                <h3 class="about__title">30 минут</h3>
+                <p class="about__text">Среднее время доставки по городу</p>
+            </div>
+            <div class="about__item about__item--peach">
+                <span class="about__icon">🛡️</span>
+                <h3 class="about__title">Страховка</h3>
+                <p class="about__text">Гарантия сохранности заказа</p>
+            </div>
+            <div class="about__item about__item--lavender">
+                <span class="about__icon">💳</span>
+                <h3 class="about__title">Честные цены</h3>
+                <p class="about__text">Без скрытых комиссий</p>
+            </div>
+            <div class="about__item about__item--butter">
+                <span class="about__icon">📍</span>
+                <h3 class="about__title">Трекинг</h3>
+                <p class="about__text">Курьер на карте от склада до двери</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="order">
+    <div class="container cta__content">
+        <div class="cta__intro">
+            <h2 class="cta__title">Оформить заказ</h2>
+            <p class="cta__subtitle">Перезвоним в течение 5 минут</p>
+        </div>
+
+        <form class="form">
+            <div class="form__row">
+                <input type="text" placeholder="Ваше имя" class="form__input" required>
+                <input type="tel" placeholder="Телефон" class="form__input" required>
+            </div>
+            <input type="text" placeholder="Что доставить?" class="form__input">
+            <button type="submit" class="btn btn--primary btn--full">Заказать доставку</button>
+        </form>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer" id="contact">
+    <div class="container">
+        <div class="footer__content">
+            <div class="footer__col">
+                <a href="#home" class="logo logo--footer">
+                    <span class="logo__mark">🐱</span>
+                    <span>Котобус</span>
+                </a>
+                <p class="footer__text">Сервис доставки. Работаем 24/7.</p>
+            </div>
+
+            <div class="footer__col">
+                <h4 class="footer__subtitle">Контакты</h4>
+                <a href="tel:+79991234567" class="footer__link">+7 (999) 123-45-67</a>
+                <a href="mailto:hello@kotobus.ru" class="footer__link">hello@kotobus.ru</a>
+                <span class="footer__link">ул. Морская, 1</span>
+            </div>
+
+            <div class="footer__col">
+                <h4 class="footer__subtitle">Услуги</h4>
+                <a href="#services" class="footer__link">Еда</a>
+                <a href="#services" class="footer__link">Продукты</a>
+                <a href="#services" class="footer__link">Посылки</a>
+                <a href="#services" class="footer__link">Грузоперевозки</a>
+            </div>
+
+            <div class="footer__col">
+                <h4 class="footer__subtitle">Компания</h4>
+                <a href="#about" class="footer__link">О нас</a>
+                <a href="#" class="footer__link">Вакансии</a>
+                <a href="#" class="footer__link">Партнёрам</a>
+            </div>
+        </div>
+
+        <div class="footer__bottom">
+            <span>© 2024 Котобус</span>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
