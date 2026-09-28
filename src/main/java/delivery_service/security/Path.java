@@ -11,7 +11,9 @@ public class Path {
     };
 
     public static final String[] PUBLIC_GET = {
-            "/"
+            "/",
+            "/login",
+            "/register"
     };
 
     public static final String[] PUBLIC_POST = {

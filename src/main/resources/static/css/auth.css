@@ -1,0 +1,135 @@
+/* ---------- Auth (login / register) ---------- */
+.auth {
+    padding: 64px 0 80px;
+    background:
+            radial-gradient(circle at 15% 20%, rgba(184, 220, 198, 0.6), transparent 45%),
+            radial-gradient(circle at 85% 80%, rgba(206, 188, 228, 0.65), transparent 48%),
+            var(--bg);
+    min-height: calc(100vh - 72px);
+}
+
+.auth__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: center;
+}
+
+.auth__card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 36px 32px;
+    box-shadow: var(--shadow-md);
+    max-width: 460px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.auth__title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+}
+
+.auth__subtitle {
+    color: var(--text-muted);
+    font-size: 14.5px;
+    margin-bottom: 26px;
+}
+
+.auth__form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.auth__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.auth__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.auth__divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 22px 0;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.auth__divider::before,
+.auth__divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.auth__switch {
+    font-size: 14px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.auth__link {
+    color: var(--mint-deep);
+    font-weight: 600;
+    transition: color .15s;
+}
+
+.auth__link:hover { color: #4f9173; }
+
+.auth__aside {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.auth__aside-title {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+.auth__aside-text {
+    color: var(--text-muted);
+    font-size: 15.5px;
+    max-width: 420px;
+    line-height: 1.6;
+}
+
+.auth__features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.auth__features li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 900px) {
+    .auth__container {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+    .auth__aside { order: -1; }
+    .auth__aside-title { font-size: 28px; }
+}
