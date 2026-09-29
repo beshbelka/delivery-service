@@ -1,4 +1,4 @@
-/* ---------- Auth (login / register) ---------- */
+/* ---------- Auth (login.js / register) ---------- */
 .auth {
     padding: 64px 0 80px;
     background:
@@ -132,4 +132,13 @@
     }
     .auth__aside { order: -1; }
     .auth__aside-title { font-size: 28px; }
+}
+
+.auth__error {
+    background: #fde2e2;
+    color: #a52a2a;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13.5px;
+    margin-top: 4px;
 }

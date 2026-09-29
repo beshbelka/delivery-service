@@ -1,0 +1,12 @@
+{
+  "name": "kotobus-frontend",
+  "private": true,
+  "scripts": {
+    "build": "gulp build",
+    "watch": "gulp watch"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-file-include": "^2.3.0"
+  }
+}

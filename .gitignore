@@ -67,3 +67,14 @@ application-local.yaml
 # Docker data
 data/
 pgdata/
+
+# ---------- Node / фронт ----------
+node_modules/
+frontend/dist/
+npm-debug.log*
+yarn-error.log*
+
+# ---------- ОС ----------
+.DS_Store
+Thumbs.db
+desktop.ini

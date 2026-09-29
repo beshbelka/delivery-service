@@ -1,11 +1,23 @@
-<!-- Login -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход — Котобус</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+
+@@include('partials/header.html')
+
 <section class="auth">
     <div class="container auth__container">
         <div class="auth__card">
             <h1 class="auth__title">Вход</h1>
             <p class="auth__subtitle">Рады видеть вас снова</p>
 
-            <form class="auth__form" method="post" action="/login">
+            <form class="auth__form" id="loginForm">
                 <div class="auth__field">
                     <label class="auth__label" for="email">Email</label>
                     <input id="email" name="email" type="email"
@@ -19,6 +31,7 @@
                 </div>
 
                 <button type="submit" class="btn btn--primary btn--full">Войти</button>
+                <p class="auth__error" id="loginError" hidden></p>
             </form>
 
             <div class="auth__divider"><span>или</span></div>
@@ -33,7 +46,7 @@
             <h2 class="auth__aside-title">Котобус</h2>
             <p class="auth__aside-text">
                 Еда, продукты, посылки, лекарства и грузоперевозки —
-                всё в одном сервисе. Курьер приедет быстрее, чем закипит чайник.
+                всё в одном сервисе.
             </p>
             <ul class="auth__features">
                 <li>⚡ Доставка от 30 минут</li>
@@ -44,3 +57,10 @@
         </div>
     </div>
 </section>
+
+@@include('partials/footer.html')
+
+<script src="/js/api.js"></script>
+<script src="/js/login.js"></script>
+</body>
+</html>

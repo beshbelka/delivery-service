@@ -11,6 +11,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,16 +48,12 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(pages -> pages
                         .requestMatchers(Path.PUBLIC).permitAll()
-                        .requestMatchers(HttpMethod.GET, Path.PUBLIC_GET)
-                        .permitAll()
-                        .requestMatchers(HttpMethod.POST,Path.PUBLIC_POST)
-                        .permitAll()
+                        .requestMatchers(HttpMethod.GET, Path.PUBLIC_GET).permitAll()
+                        .requestMatchers(HttpMethod.POST,Path.PUBLIC_POST).permitAll()
                         .anyRequest().authenticated())
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/auth/login"))
-                        .accessDeniedHandler((request, response, accessDeniedException) -> response.sendRedirect("/auth/login"))
+                        .authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login"))
+                        .accessDeniedHandler((request, response, accessDeniedException) -> response.sendRedirect("/login"))
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(
@@ -64,5 +61,16 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class
                 );
         return http.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(
+                "/css/**",
+                "/js/**",
+                "/img/**",
+                "/fonts/**",
+                "/favicon.ico"
+        );
     }
 }
