@@ -1,4 +1,4 @@
-// frontend/static/js/register.js
+
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -7,39 +7,38 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     errorEl.textContent = '';
 
     const name      = document.getElementById('name').value.trim();
-    const email     = document.getElementById('email').value.trim();
-    const phone     = document.getElementById('phone').value.trim();
-    const password  = document.getElementById('password').value;
+    const login     = document.getElementById('login').value.trim();
+    const password1  = document.getElementById('password').value;
     const password2 = document.getElementById('password2').value;
 
-    // клиентская валидация
-    if (password !== password2) {
-        errorEl.textContent = 'Пароли не совпадают';
-        errorEl.hidden = false;
+    if (!name || !login) {
+        showError(errorEl, 'Заполните все поля');
         return;
     }
-
-    if (password.length < 8) {
-        errorEl.textContent = 'Пароль должен быть минимум 8 символов';
-        errorEl.hidden = false;
+    if (password1 !== password2) {
+        showError(errorEl, 'Пароли не совпадают');
+        return;
+    }
+    if (password1.length < 8) {
+        showError(errorEl, 'Пароль должен быть минимум 8 символов');
         return;
     }
 
     try {
-        const data = await API.post('/auth/register', {
-            name, email, phone, password
+        const res = await API.post('/auth/register', {
+            name, login, password1, password2
         });
-
-        // если бэк вернул токен — сразу логиним
-        if (data && data.token) {
-            localStorage.setItem('token', data.token);
+        if (res.success) {
             window.location.href = '/';
         } else {
-            // иначе отправляем на страницу входа
-            window.location.href = '/login?registered=1';
+            showError(res.message);
         }
     } catch (err) {
-        errorEl.textContent = err.message;
-        errorEl.hidden = false;
+        showError(errorEl, err.message);
     }
 });
+
+function showError(el, message) {
+    el.textContent = message;
+    el.hidden = false;
+}

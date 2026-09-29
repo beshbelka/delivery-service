@@ -49,4 +49,12 @@ public class User implements UserDetails {
     public String getUsername() {
         return login;
     }
+
+    public User (String login, String name, String password) {
+        this.login = login;
+        this.name = name;
+        this.password = password;
+        this.role = USER_ROLE.USER;
+        this.orders = new ArrayList<>();
+    }
 }

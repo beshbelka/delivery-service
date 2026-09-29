@@ -16,5 +16,6 @@ public class Path {
     };
 
     public static final String[] PUBLIC_POST = {
+            "/auth/**"
     };
 }

@@ -1,55 +1,44 @@
 package delivery_service;
 
+import lombok.Data;
 
-import java.util.HashMap;
+import java.util.Map;
 
+@Data
 public class ApiResponse {
 
-    int code;
-    String message;
-    HashMap<String, String> data;
+    private final boolean success;
+    private final int code;
+    private final String message;
+    private final Map<String, Object> data;
 
-    private ApiResponse(int code, String message, HashMap<String, String> data) {
+    private ApiResponse (boolean success, int code, String message, Map<String, Object> data) {
+        this.success = success;
         this.code = code;
         this.message = message;
         this.data = data;
     }
 
-    public ApiResponse success() {
-        return new ApiResponse(200, "ok", new HashMap<>());
+    public static ApiResponse success() {
+        return new ApiResponse(true, 200, "Операция успешна", Map.of());
     }
-    public ApiResponse success(String message) {
-        return new ApiResponse(200, message, new HashMap<>());
+    public static ApiResponse success(String message) {
+        return new ApiResponse(true, 200, message, Map.of());
     }
-    public ApiResponse success(HashMap<String, String> data) {
-        return new ApiResponse(200, "Операция успешна", data);
+    public static ApiResponse success(Map<String, Object> data) {
+        return new ApiResponse(true, 200, "Операция успешна", Map.copyOf(data));
     }
-    public ApiResponse success(String message, HashMap<String, String> data) {
-        return new ApiResponse(200, message, data);
+    public static ApiResponse success(String message, Map<String, Object> data) {
+        return new ApiResponse(true, 200, message, Map.copyOf(data));
     }
 
-    public ApiResponse error() {
-        return new ApiResponse(500, "Ошибка сервера", new HashMap<>());
+    public static ApiResponse error() {
+        return new ApiResponse(false, 500, "Ошибка сервера", Map.of());
     }
-    public ApiResponse error(int code) {
-        return new ApiResponse(code, "Ошибка сервера", new HashMap<>());
+    public static ApiResponse error(int code, String message) {
+        return new ApiResponse(false, code, message, Map.of());
     }
-    public ApiResponse error(String message) {
-        return new ApiResponse(500, message, new HashMap<>());
-    }
-    public ApiResponse error(HashMap<String, String> data) {
-        return new ApiResponse(500, "Ошибка сервера", data);
-    }
-    public ApiResponse error(int code, String message) {
-        return new ApiResponse(code, message, new HashMap<>());
-    }
-    public ApiResponse error(int code, HashMap<String, String> data) {
-        return new ApiResponse(code, "Ошибка сервера", data);
-    }
-    public ApiResponse error(String message, HashMap<String, String> data) {
-        return new ApiResponse(500, message, data);
-    }
-    public ApiResponse error(int code, String message, HashMap<String, String> data) {
-        return new ApiResponse(code, message, data);
+    public static ApiResponse error(int code, String message, Map<String, Object> data) {
+        return new ApiResponse(false, code, message, Map.copyOf(data));
     }
 }
