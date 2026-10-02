@@ -4,13 +4,14 @@ import delivery_service.ApiResponse;
 import delivery_service.DTO.RegisterRequest;
 import delivery_service.exception.BaseException;
 import delivery_service.service.AuthService;
+import delivery_service.service.TokenService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 
 @RequiredArgsConstructor
 @RestController
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+    private final TokenService tokenService;
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse> register (@RequestBody RegisterRequest request, HttpServletResponse response) {
@@ -36,6 +38,29 @@ public class AuthController {
                         .status(apiResponse.getCode())
                         .body(apiResponse);
             }
+        } catch (BaseException e) {
+            return ResponseEntity
+                    .status(e.getErrorCode())
+                    .body(ApiResponse.error(e.getErrorCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(500)
+                    .body(ApiResponse.error());
+        }
+    }
+
+    @GetMapping("/profile")
+    public ResponseEntity<ApiResponse> getUserData(HttpServletRequest request) {
+        try {
+            String token = tokenService.extractTokenFromCookies(request);
+            String login = tokenService.extractLogin(token);
+            ApiResponse apiResponse = authService.getUserData(login);
+            if (apiResponse.isSuccess()) {
+                return ResponseEntity.ok(apiResponse);
+            }
+            return ResponseEntity
+                    .status(apiResponse.getCode())
+                    .body(apiResponse);
         } catch (BaseException e) {
             return ResponseEntity
                     .status(e.getErrorCode())

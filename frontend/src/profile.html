@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет — Котобус</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/profile.css">
+</head>
+<body>
+
+@@include('partials/header.html')
+
+<main class="profile">
+    <div class="container">
+
+        <!-- Заголовок -->
+        <div class="profile__head">
+            <h1 class="profile__title">Личный кабинет</h1>
+            <p class="profile__subtitle">Управляйте своими данными и заказами</p>
+        </div>
+
+        <!-- Карточка: Мои данные -->
+        <section class="profile-card">
+            <div class="profile-card__header">
+                <h2 class="profile-card__title">Мои данные</h2>
+                <button class="btn btn--ghost" id="toggleEditBtn" type="button">
+                    ✎ Редактировать
+                </button>
+            </div>
+
+            <div class="profile-info">
+                <div class="profile-avatar">
+                    <div class="profile-avatar__circle" id="avatarDisplay">🐙</div>
+                </div>
+
+                <div class="profile-fields">
+                    <div class="field">
+                        <span class="field__label">Логин</span>
+                        <span class="field__value" id="loginValue">—</span>
+                    </div>
+
+                    <div class="field field--editable">
+                        <span class="field__label">Имя</span>
+                        <span class="field__value display-mode" id="nameDisplay">—</span>
+                        <input type="text" class="field__input edit-mode" id="nameInput"
+                               placeholder="Введите имя" style="display: none;">
+                    </div>
+
+                    <div class="field">
+                        <span class="field__label">Роль</span>
+                        <span class="field__value field__value--role" id="roleValue">—</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-actions" id="profileActions">
+                <button type="button" class="btn btn--primary" id="changePasswordBtn">Сменить пароль</button>
+                <button type="button" class="btn btn--ghost" id="logoutButton">Выйти</button>
+                <button type="button" class="btn btn--danger" id="deleteAccountBtn">Удалить аккаунт</button>
+            </div>
+
+            <div class="profile-actions" id="editActions" style="display: none;">
+                <button type="button" class="btn btn--ghost" id="cancelEditBtn">Отменить</button>
+                <button type="button" class="btn btn--primary" id="saveEditBtn">Сохранить изменения</button>
+            </div>
+        </section>
+
+        <!-- Карточка: Мои заказы -->
+        <section class="profile-card">
+            <div class="profile-card__header">
+                <h2 class="profile-card__title">Мои заказы</h2>
+                <span class="profile-card__count" id="ordersCount">0</span>
+            </div>
+
+            <div class="orders" id="ordersList">
+                <!-- Заказы рендерятся из JS -->
+            </div>
+
+            <div class="orders-empty" id="ordersEmpty">
+                <p>У вас пока нет заказов.</p>
+                <a href="/" class="btn btn--primary">Оформить доставку</a>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+@@include('partials/footer.html')
+
+<div id="notification" class="notification" style="display: none;"></div>
+
+<!-- Модалка: смена пароля -->
+<div class="modal" id="passwordModal" style="display: none;">
+    <div class="modal__overlay" data-close="passwordModal"></div>
+    <div class="modal__window">
+        <div class="modal__header">
+            <h3 class="modal__title">Смена пароля</h3>
+            <button type="button" class="modal__close" data-close="passwordModal">✕</button>
+        </div>
+        <form class="modal__body" id="passwordForm">
+            <label class="modal__field">
+                <span class="field__label">Текущий пароль</span>
+                <input type="password" class="field__input" id="currentPassword" required>
+            </label>
+            <label class="modal__field">
+                <span class="field__label">Новый пароль</span>
+                <input type="password" class="field__input" id="newPassword" required>
+            </label>
+            <label class="modal__field">
+                <span class="field__label">Повторите новый пароль</span>
+                <input type="password" class="field__input" id="newPassword2" required>
+            </label>
+            <div class="modal__actions">
+                <button type="button" class="btn btn--ghost" data-close="passwordModal">Отмена</button>
+                <button type="submit" class="btn btn--primary">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/profile.js"></script>
+</body>
+</html>

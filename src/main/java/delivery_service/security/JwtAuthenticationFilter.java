@@ -1,5 +1,8 @@
 package delivery_service.security;
 
+import delivery_service.exception.TokenExpiredException;
+import delivery_service.exception.UserNotFoundException;
+import delivery_service.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,6 +10,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
@@ -16,23 +24,22 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    private final TokenService tokenService;
+    private final UserDetailsService userDetailsService;
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-/*
-        String accessToken = jwtService.extractAccessTokenFromCookies(request);
-        String refreshToken = jwtService.extractRefreshTokenFromCookies(request);
 
-        if (accessToken == null) {
-            log.error("access token is null (JwtAuthenticationFilter)");
-            if (refreshToken != null) {
-                refreshTokenService.refresh(refreshToken, response, request);
-            }
+        String token = tokenService.extractTokenFromCookies(request);
+
+        if (token == null) {
+            log.error("token is null");
             filterChain.doFilter(request, response);
             return;
         }
-
+/*
         if (blacklistService.isBlackListed(accessToken)) {
             log.info("token blacklisted");
             jwtService.clearAccessTokenCookie(response);
@@ -40,13 +47,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-
+*/
         try {
-            if (jwtService.isTokenValid(accessToken)) {
-                final String email = jwtService.extractEmail(accessToken);
-                if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            if (tokenService.isTokenValid(token)) {
+                final String login = tokenService.extractLogin(token);
+                if (SecurityContextHolder.getContext().getAuthentication() == null) {
                     try {
-                        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                        UserDetails userDetails = userDetailsService.loadUserByUsername(login);
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                                 userDetails,
                                 null,
@@ -57,38 +64,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         );
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     } catch (UserNotFoundException e) {
-                        log.warn("JwtAuthenticationFilter: user not found, {}", e.getMessage());
-                        throw new UserNotFoundException();
+                        log.warn("user not found");
                     }
                 } else {
                     throw new UserNotFoundException();
                 }
-            } else if (jwtService.isRefreshTokenValid(refreshToken)) {
-                refreshTokenService.refresh(refreshToken, response, request);
-                log.info("Authentication set for user: {}",
-                        SecurityContextHolder.getContext().getAuthentication() != null
-                                ? SecurityContextHolder.getContext().getAuthentication().getName()
-                                : "null");
             } else {
-                log.warn("JwtAuthenticationFilter: token invalid");
+                log.warn("token invalid");
             }
-        } catch (TokenExpiredException e) {
-            log.error("JwtAuthenticationFilter: Токен истек, ошибка: {}", e.getMessage());
-            if (refreshToken != null && !blacklistService.isBlackListed(refreshToken)
-                    && jwtService.isRefreshTokenValid(refreshToken)) {
-                refreshTokenService.refresh(refreshToken, response, request);
-                String email = jwtService.extractEmail(refreshToken);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+        } catch (Exception e) {
+            log.error(e.getMessage());
         }
         filterChain.doFilter(request, response);
-*/
-    filterChain.doFilter(request,response);
     }
 
     @Override

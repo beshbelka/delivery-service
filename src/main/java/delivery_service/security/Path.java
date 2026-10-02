@@ -9,7 +9,7 @@ public class Path {
             "/register",
             "/login.html",
             "/register.html",
-            "/index.html"
+            "/index.html",
     };
 
     public static final String[] PUBLIC_GET = {

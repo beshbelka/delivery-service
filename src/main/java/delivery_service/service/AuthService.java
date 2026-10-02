@@ -5,12 +5,16 @@ import delivery_service.DTO.RegisterRequest;
 import delivery_service.entity.User;
 import delivery_service.enums.USER_ROLE;
 import delivery_service.exception.BaseException;
+import delivery_service.exception.UserNotFoundException;
 import delivery_service.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +39,21 @@ public class AuthService {
             String token = tokenService.generateToken(request.login(), USER_ROLE.USER);
             tokenService.addTokenCookie(response, token);
             return ApiResponse.success();
+        } catch (BaseException e) {
+            return ApiResponse.error(e.getErrorCode(), e.getMessage());
+        } catch (Exception e) {
+            return ApiResponse.error();
+        }
+    }
+
+    public ApiResponse getUserData(String login) {
+        try {
+            User user = userRepository.findByLogin(login).orElseThrow(UserNotFoundException::new);
+            Map<String, Object> data = new HashMap<>(3);
+            data.put("name", user.getName());
+            data.put("login", user.getLogin());
+            data.put("role", user.getFormattedRole());
+            return ApiResponse.success(data);
         } catch (BaseException e) {
             return ApiResponse.error(e.getErrorCode(), e.getMessage());
         } catch (Exception e) {

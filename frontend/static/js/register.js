@@ -29,7 +29,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
             name, login, password1, password2
         });
         if (res.success) {
-            window.location.href = '/';
+            window.location.href = '/profile';
         } else {
             showError(res.message);
         }

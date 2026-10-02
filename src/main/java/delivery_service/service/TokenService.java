@@ -1,10 +1,16 @@
 package delivery_service.service;
 
 import delivery_service.enums.USER_ROLE;
-import io.jsonwebtoken.Jwts;
+import delivery_service.exception.InvalidTokenException;
+import delivery_service.exception.LoginIsNullException;
+import delivery_service.exception.TokenExpiredException;
+import delivery_service.exception.TokenISNullException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.io.Decoders;
@@ -47,5 +53,56 @@ public class TokenService {
         cookie.setPath("/");
         cookie.setMaxAge(tokenExpiration / 1000);
         response.addCookie(cookie);
+    }
+
+    public String extractTokenFromCookies(@NonNull HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) return null;
+        for (Cookie i : cookies) {
+            if ("token".equals(i.getName())) {
+                return i.getValue();
+            }
+        }
+        return null;
+    }
+
+    public boolean isTokenValid(String token) {
+        try {
+            String login = extractLogin(token);
+            return !isTokenExpired(token) && login != null;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean isTokenExpired(String token) {
+        return extractAllClaims(token).getExpiration().before(new Date());
+    }
+
+    public String extractLogin(String token){
+        if (token == null || token.isEmpty()) {
+            throw new TokenISNullException();
+        }
+        String login = extractAllClaims(token).getSubject();
+        if (login == null || login.isEmpty()) {
+            throw new LoginIsNullException();
+        }
+        return login;
+    }
+
+    private Claims extractAllClaims(String token) {
+        try {
+            return Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ExpiredJwtException e) {
+            throw new TokenExpiredException();
+        } catch (JwtException e) {
+            throw new InvalidTokenException();
+        } catch (IllegalArgumentException e) {
+            throw new TokenISNullException();
+        }
     }
 }

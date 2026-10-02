@@ -57,4 +57,21 @@ public class User implements UserDetails {
         this.role = USER_ROLE.USER;
         this.orders = new ArrayList<>();
     }
+
+    public String getFormattedRole() {
+        switch (this.role) {
+            case USER_ROLE.USER -> {
+                return "Пользователь";
+            }
+            case USER_ROLE.ADMIN -> {
+                return "Администратор";
+            }
+            case USER_ROLE.MANAGER -> {
+                return "Менеджер";
+            }
+            default -> {
+                return "Неизвестно";
+            }
+        }
+    }
 }
