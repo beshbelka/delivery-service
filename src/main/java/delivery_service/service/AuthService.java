@@ -1,10 +1,12 @@
 package delivery_service.service;
 
 import delivery_service.ApiResponse;
-import delivery_service.DTO.RegisterRequest;
+import delivery_service.DTO.request.LoginRequest;
+import delivery_service.DTO.request.RegisterRequest;
 import delivery_service.entity.User;
 import delivery_service.enums.USER_ROLE;
 import delivery_service.exception.BaseException;
+import delivery_service.exception.LoginFailedException;
 import delivery_service.exception.UserNotFoundException;
 import delivery_service.repository.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
@@ -59,5 +61,13 @@ public class AuthService {
         } catch (Exception e) {
             return ApiResponse.error();
         }
+    }
+
+    public String login(LoginRequest request) {
+        User user = userRepository.findByLogin(request.login()).orElseThrow(LoginFailedException::new);
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new LoginFailedException();
+        }
+        return tokenService.generateToken(request.login(), user.getRole());
     }
 }

@@ -1,17 +1,17 @@
 package delivery_service.controller;
 
 import delivery_service.ApiResponse;
-import delivery_service.DTO.RegisterRequest;
+import delivery_service.DTO.request.LoginRequest;
+import delivery_service.DTO.request.RegisterRequest;
 import delivery_service.exception.BaseException;
 import delivery_service.service.AuthService;
 import delivery_service.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
 
 @RequiredArgsConstructor
 @RestController
@@ -22,7 +22,7 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse> register (@RequestBody RegisterRequest request, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse> register(@RequestBody RegisterRequest request, HttpServletResponse response) {
         try {
             if (request.name() == null) return ResponseEntity.status(400).body(ApiResponse.error(400, "Имя не может быть пустым"));
             if (request.name().length() < 2) return ResponseEntity.status(400).body(ApiResponse.error(400, "Длина имени должна ыть не меньше 2 символов"));
@@ -70,5 +70,13 @@ public class AuthController {
                     .status(500)
                     .body(ApiResponse.error());
         }
+    }
+
+    @PostMapping("/login")
+    public ApiResponse login(@Valid @RequestBody LoginRequest loginRequest,
+                                             HttpServletResponse response) {
+        String token = authService.login(loginRequest);
+        tokenService.addTokenCookie(response,token);
+        return ApiResponse.success();
     }
 }

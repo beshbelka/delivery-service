@@ -1,4 +1,4 @@
-package delivery_service.DTO;
+package delivery_service.DTO.request;
 
 public record RegisterRequest(
         String name,

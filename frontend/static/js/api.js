@@ -2,7 +2,6 @@
 const API = (() => {
 
     let accessToken = null;
-    let refreshPromise = null;
 
     function setAccessToken(token) {
         accessToken = token;
@@ -42,52 +41,8 @@ const API = (() => {
         return data;
     }
 
-    async function refresh() {
-        if (refreshPromise) return refreshPromise;
-
-        refreshPromise = (async () => {
-            try {
-                const res = await fetch('/auth/refresh', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-
-                if (!res.ok) {
-                    clearAccessToken();
-                    return null;
-                }
-
-                const data = await parse(res);
-                const newToken = data && data.data && data.data.accessToken;
-                if (!newToken) {
-                    clearAccessToken();
-                    return null;
-                }
-
-                setAccessToken(newToken);
-                return newToken;
-            } catch {
-                clearAccessToken();
-                return null;
-            } finally {
-                refreshPromise = null;
-            }
-        })();
-
-        return refreshPromise;
-    }
-
-    async function request(method, path, body, isRetry = false) {
+    async function request(method, path, body) {
         const res = await doFetch(method, path, body);
-
-        if (res.status === 401 && !isRetry) {
-            const newToken = await refresh();
-            if (newToken) {
-                return request(method, path, body, true);
-            }
-            redirectToLogin();
-            throw new Error('Сессия истекла');
-        }
 
         const data = await parse(res);
 
@@ -100,12 +55,6 @@ const API = (() => {
         }
 
         return data;
-    }
-
-    function redirectToLogin() {
-        if (!window.location.pathname.startsWith('/login')) {
-            window.location.href = '/login';
-        }
     }
 
     return {

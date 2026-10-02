@@ -85,7 +85,7 @@ public class TokenService {
         }
         String login = extractAllClaims(token).getSubject();
         if (login == null || login.isEmpty()) {
-            throw new LoginIsNullException();
+            throw new InvalidTokenException();
         }
         return login;
     }
