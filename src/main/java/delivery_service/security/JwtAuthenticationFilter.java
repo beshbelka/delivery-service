@@ -1,7 +1,7 @@
 package delivery_service.security;
 
-import delivery_service.exception.TokenExpiredException;
 import delivery_service.exception.UserNotFoundException;
+import delivery_service.service.BlacklistService;
 import delivery_service.service.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,6 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
     private final UserDetailsService userDetailsService;
+    private final BlacklistService blacklistService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -35,21 +36,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = tokenService.extractTokenFromCookies(request);
 
         if (token == null) {
-            log.error("token is null");
             filterChain.doFilter(request, response);
             return;
         }
-/*
-        if (blacklistService.isBlackListed(accessToken)) {
-            log.info("token blacklisted");
-            jwtService.clearAccessTokenCookie(response);
-            jwtService.clearRefreshTokenCookie(response);
-            filterChain.doFilter(request, response);
-            return;
-        }
-*/
         try {
             if (tokenService.isTokenValid(token)) {
+                String jti = tokenService.extractJti(token);
+                if (blacklistService.isBlacklisted(jti)) {
+                    filterChain.doFilter(request, response);
+                }
                 final String login = tokenService.extractLogin(token);
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
                     try {

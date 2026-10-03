@@ -13,6 +13,12 @@ public class Path {
     };
 
     public static final String[] PUBLIC_GET = {
+            "/css/**",
+            "/js/**",
+            "/img/**",
+            "/fonts/**",
+            "/favicon.ico",
+            "/.well-knownn/**",
     };
 
     public static final String[] PUBLIC_POST = {

@@ -10,16 +10,23 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.io.Decoders;
 
 import javax.crypto.SecretKey;
+import javax.xml.crypto.Data;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+@Slf4j
 @Service
 public class TokenService {
 
@@ -38,6 +45,7 @@ public class TokenService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", role);
         return Jwts.builder()
+                .id(UUID.randomUUID().toString())
                 .claims(claims)
                 .subject(login)
                 .issuedAt(new Date())
@@ -71,6 +79,7 @@ public class TokenService {
             String login = extractLogin(token);
             return !isTokenExpired(token) && login != null;
         } catch (Exception e) {
+            log.warn("isTokenValid failed: {}", e.getClass().getSimpleName(), e);
             return false;
         }
     }
@@ -104,5 +113,26 @@ public class TokenService {
         } catch (IllegalArgumentException e) {
             throw new TokenISNullException();
         }
+    }
+
+    public String extractJti(String token) {
+        return extractAllClaims(token).getId();
+    }
+
+    public Duration getRemainingTtl(String token) {
+        Date expiration = extractAllClaims(token).getExpiration();
+        long millis = expiration.getTime() - System.currentTimeMillis();
+        return Duration.ofMillis(Math.max(millis, 0));
+    }
+
+    public void clearTokenCookie(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("token", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Lax")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
 }

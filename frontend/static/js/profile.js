@@ -9,6 +9,7 @@
         ordersEmpty: $('ordersEmpty'),
         ordersCount: $('ordersCount'),
         notification:$('notification'),
+        logoutBtn:   $('logoutButton'),
     };
 
     let currentUser = null;
@@ -30,7 +31,6 @@
         const name  = localStorage.getItem('name');
         const role  = localStorage.getItem('role');
 
-        // нужны все три поля — иначе идём на сервер
         if (!login || !name || !role) return null;
 
         return { login, name, role };
@@ -51,17 +51,25 @@
             renderUser(currentUser);
         } else {
             try {
-                const data = await API.get('/auth/profile');
-                // ждём именно login, name, role
-                if (!data.login || !data.name || !data.role) {
+                const res = await API.get('/auth/profile');
+
+                // ApiResponse: { success, code, message, data: {login, name, role} }
+                if (!res || !res.success || !res.data) {
+                    notify((res && res.message) || 'Не удалось загрузить профиль', true);
+                    return;
+                }
+
+                const user = res.data;
+
+                if (!user.login || !user.name || !user.role) {
                     notify('Профиль вернул неполные данные', true);
                     return;
                 }
 
                 currentUser = {
-                    login: data.login,
-                    name:  data.name,
-                    role:  data.role,
+                    login: user.login,
+                    name:  user.name,
+                    role:  user.role,
                 };
 
                 cacheUser(currentUser);
@@ -141,6 +149,25 @@
             '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
         }[s]));
     }
+
+    // ---------- Logout ----------
+    async function logout() {
+        try {
+            const res = await API.post('/auth/logout');
+            if (res && res.success) {
+                localStorage.removeItem('login');
+                localStorage.removeItem('name');
+                localStorage.removeItem('role');
+                window.location.href = '/';
+            } else {
+                notify('Ошибка сервера', true);
+            }
+        } catch (err) {
+            notify('Ошибка сервера', true);
+        }
+    }
+
+    els.logoutBtn.addEventListener('click', logout);
 
     loadProfile();
 })();
