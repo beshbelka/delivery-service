@@ -3,6 +3,7 @@ package delivery_service.controller;
 import delivery_service.ApiResponse;
 import delivery_service.DTO.request.LoginRequest;
 import delivery_service.DTO.request.RegisterRequest;
+import delivery_service.DTO.response.UserDataResponse;
 import delivery_service.exception.BaseException;
 import delivery_service.service.AuthService;
 import delivery_service.service.TokenService;
@@ -22,54 +23,17 @@ public class AuthController {
     private final TokenService tokenService;
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse> register(@RequestBody RegisterRequest request, HttpServletResponse response) {
-        try {
-            if (request.name() == null) return ResponseEntity.status(400).body(ApiResponse.error(400, "Имя не может быть пустым"));
-            if (request.name().length() < 2) return ResponseEntity.status(400).body(ApiResponse.error(400, "Длина имени должна ыть не меньше 2 символов"));
-            if (request.login() == null) return ResponseEntity.status(400).body(ApiResponse.error(400, "Логин не может быть пустым"));
-            if (request.password1() == null || request.password2() == null) return ResponseEntity.status(400).body(ApiResponse.error(400, "Пароль не может быть пустым"));
-            if (!request.password1().equals(request.password2())) return ResponseEntity.status(400).body(ApiResponse.error(400, "Пароли не совпадают"));
-            ApiResponse apiResponse = authService.register(request, response);
-            if (apiResponse.isSuccess()) {
-                return ResponseEntity
-                        .ok(apiResponse);
-            } else {
-                return ResponseEntity
-                        .status(apiResponse.getCode())
-                        .body(apiResponse);
-            }
-        } catch (BaseException e) {
-            return ResponseEntity
-                    .status(e.getErrorCode())
-                    .body(ApiResponse.error(e.getErrorCode(), e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(500)
-                    .body(ApiResponse.error());
-        }
+    public ApiResponse register(@Valid @RequestBody RegisterRequest request, HttpServletResponse response) {
+        String token = authService.register(request);
+        tokenService.addTokenCookie(response, token);
+        return ApiResponse.success();
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<ApiResponse> getUserData(HttpServletRequest request) {
-        try {
-            String token = tokenService.extractTokenFromCookies(request);
-            String login = tokenService.extractLogin(token);
-            ApiResponse apiResponse = authService.getUserData(login);
-            if (apiResponse.isSuccess()) {
-                return ResponseEntity.ok(apiResponse);
-            }
-            return ResponseEntity
-                    .status(apiResponse.getCode())
-                    .body(apiResponse);
-        } catch (BaseException e) {
-            return ResponseEntity
-                    .status(e.getErrorCode())
-                    .body(ApiResponse.error(e.getErrorCode(), e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity
-                    .status(500)
-                    .body(ApiResponse.error());
-        }
+    public UserDataResponse getUserData(HttpServletRequest request) {
+        String token = tokenService.extractTokenFromCookies(request);
+        String login = tokenService.extractLogin(token);
+        return authService.getUserData(login);
     }
 
     @PostMapping("/login")

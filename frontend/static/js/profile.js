@@ -51,9 +51,7 @@
             renderUser(currentUser);
         } else {
             try {
-                const res = await API.get('/auth/profile');
-                const data = res.data || {};
-
+                const data = await API.get('/auth/profile');
                 // ждём именно login, name, role
                 if (!data.login || !data.name || !data.role) {
                     notify('Профиль вернул неполные данные', true);
