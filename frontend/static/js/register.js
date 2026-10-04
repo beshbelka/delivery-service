@@ -42,3 +42,6 @@ function showError(el, message) {
     el.textContent = message;
     el.hidden = false;
 }
+
+fetch('/auth/profile', { credentials: 'include' })
+    .then(r => { if (r.ok) location.href = '/profile'; });

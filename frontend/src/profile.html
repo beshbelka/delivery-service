@@ -6,6 +6,12 @@
     <title>Личный кабинет — Котобус</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/profile.css">
+    <script>
+        fetch('/auth/profile', { credentials: 'include' })
+            .then(r => {
+                if (r.status === 401) location.href = '/login';
+            });
+    </script>
 </head>
 <body>
 

@@ -4,6 +4,7 @@ import delivery_service.exception.UserNotFoundException;
 import delivery_service.service.BlacklistService;
 import delivery_service.service.TokenService;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,6 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String jti = tokenService.extractJti(token);
                 if (blacklistService.isBlacklisted(jti)) {
                     filterChain.doFilter(request, response);
+                    return;
                 }
                 final String login = tokenService.extractLogin(token);
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -61,8 +63,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     } catch (UserNotFoundException e) {
                         log.warn("user not found");
                     }
-                } else {
-                    throw new UserNotFoundException();
                 }
             } else {
                 log.warn("token invalid");
@@ -71,38 +71,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.error(e.getMessage());
         }
         filterChain.doFilter(request, response);
-    }
-
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-
-        String path = request.getRequestURI();
-        String method = request.getMethod();
-
-        if (method.equals("GET")) {
-            for (String publicPath : Path.PUBLIC_GET) {
-                if (publicPath.endsWith("/**")) {
-                    String prefix = publicPath.replace("/**", "");
-                    if (path.startsWith(prefix)) return true;
-                } else if (path.equals(publicPath)) return true;
-            }
-        }
-
-        if (method.equals("POST")) {
-            for (String publicPath : Path.PUBLIC_POST) {
-                if (publicPath.endsWith("/**")) {
-                    String prefix = publicPath.replace("/**", "");
-                    if (path.startsWith(prefix)) return true;
-                } else if (path.equals(publicPath)) return true;
-            }
-        }
-
-        for (String publicPath : Path.PUBLIC) {
-            if (publicPath.endsWith("/**")) {
-                String prefix = publicPath.replace("/**", "");
-                if (path.startsWith(prefix)) return true;
-            } else if (path.equals(publicPath)) return true;
-        }
-        return false;
     }
 }

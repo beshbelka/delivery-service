@@ -1,5 +1,6 @@
 const gulp = require('gulp');
 const fileInclude = require('gulp-file-include');
+const browserSync = require('browser-sync').create();
 
 const HTML_SRC = [
     'src/**/*.html',
@@ -14,21 +15,33 @@ function html() {
             prefix: '@@',
             basepath: '@file'
         }))
-        .pipe(gulp.dest(DEST));
+        .pipe(gulp.dest(DEST))
+        .pipe(browserSync.stream());
 }
 
 function assets() {
     return gulp.src(STATIC_SRC)
-        .pipe(gulp.dest(DEST));
+        .pipe(gulp.dest(DEST))
+        .pipe(browserSync.stream());
 }
 
 const build = gulp.series(html, assets);
 
+function serve(done) {
+    browserSync.init({
+        server: { baseDir: './dist' },
+        open: false,
+        notify: false,
+        port: 3000
+    });
+    done();
+}
+
 function watch() {
     gulp.watch(['src/**/*.html'], html);
-    gulp.watch([STATIC_SRC], assets);
+    gulp.watch(STATIC_SRC, assets);
 }
 
 exports.build = build;
-exports.watch = watch;
+exports.watch = gulp.series(build, serve, watch);
 exports.default = build;

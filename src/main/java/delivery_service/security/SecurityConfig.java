@@ -1,6 +1,7 @@
 package delivery_service.security;
 
 import delivery_service.service.UserDetailsServiceImpl;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,13 +48,13 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(pages -> pages
-                        .requestMatchers(Path.PUBLIC).permitAll()
-                        .requestMatchers(HttpMethod.GET, Path.PUBLIC_GET).permitAll()
-                        .requestMatchers(HttpMethod.POST,Path.PUBLIC_POST).permitAll()
+                        .requestMatchers(Path.ANONYMOUS).anonymous()
                         .anyRequest().authenticated())
                 .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login"))
-                        .accessDeniedHandler((request, response, accessDeniedException) -> response.sendRedirect("/login"))
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                        })
+                        .authenticationEntryPoint((request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                 )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(
@@ -61,16 +62,5 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class
                 );
         return http.build();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().requestMatchers(
-                "/css/**",
-                "/js/**",
-                "/img/**",
-                "/fonts/**",
-                "/favicon.ico"
-        );
     }
 }

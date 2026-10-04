@@ -1,0 +1,144 @@
+/* ---------- About page ---------- */
+.about-page {
+    padding: 48px 0 80px;
+}
+
+.back-link {
+    display: inline-block;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+    transition: color .15s;
+}
+
+.back-link:hover {
+    color: var(--mint-deep);
+}
+
+.about-page__head {
+    margin-bottom: 28px;
+}
+
+.about-page__title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+}
+
+.about-page__subtitle {
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+/* ---------- Card ---------- */
+.about-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 24px;
+}
+
+.about-card--center {
+    text-align: center;
+}
+
+.about-card__title {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* ---------- Stats ---------- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.stat-box {
+    padding: 22px 20px;
+    border-radius: var(--radius);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition: box-shadow .2s;
+}
+
+.stat-box:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.stat-box--mint     { background: var(--mint); }
+.stat-box--peach    { background: var(--peach); }
+.stat-box--lavender { background: var(--lavender); }
+.stat-box--butter   { background: var(--butter); }
+
+.stat-number {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--text);
+}
+
+.stat-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(43, 39, 36, 0.75);
+}
+
+/* ---------- Tech details ---------- */
+.tech-details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tech-details p {
+    font-size: 14.5px;
+    color: var(--text);
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+
+/* ---------- GitHub link ---------- */
+.github-link {
+    display: inline-block;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--rose-deep);
+    padding: 12px 22px;
+    background: var(--rose);
+    border-radius: var(--radius-sm);
+    transition: background .15s, box-shadow .15s;
+}
+
+.github-link:hover {
+    background: #a4cfb5;
+    box-shadow: var(--shadow-sm);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 720px) {
+    .about-page { padding: 32px 0 56px; }
+    .about-page__title { font-size: 24px; }
+    .about-card { padding: 20px; }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}

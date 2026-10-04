@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О проекте — Котобус</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/about.css">
+</head>
+<body>
+
+@@include('partials/header.html')
+
+<!-- About project -->
+<section class="about-page" id="about">
+    <div class="container">
+
+        <a href="/" class="back-link">← На главную</a>
+
+        <div class="about-page__head">
+            <h1 class="about-page__title">О проекте</h1>
+            <p class="about-page__subtitle">Техническая информация о сервисе доставки «Котобус»</p>
+        </div>
+
+        <!-- Статистика -->
+        <div class="about-card">
+            <h2 class="about-card__title">О сервисе</h2>
+            <div class="stats-grid">
+                <div class="stat-box stat-box--mint">
+                    <div class="stat-number">30</div>
+                    <div class="stat-label">минут — среднее время</div>
+                </div>
+                <div class="stat-box stat-box--peach">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">категорий услуг</div>
+                </div>
+                <div class="stat-box stat-box--lavender">
+                    <div class="stat-number">142</div>
+                    <div class="stat-label">курьеров онлайн</div>
+                </div>
+                <div class="stat-box stat-box--butter">
+                    <div class="stat-number">4.9</div>
+                    <div class="stat-label">средняя оценка</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Стек -->
+        <div class="about-card">
+            <h2 class="about-card__title">Технический стек</h2>
+            <div class="tech-details">
+                <p>🩷 Backend: Spring Boot</p>
+                <p>🩷 База данных: PostgreSQL</p>
+                <p>🩷 ORM: Spring Data JPA / Hibernate</p>
+                <p>🩷 Кэш: Redis</p>
+                <p>🩷 Аутентификация: JWT (HttpOnly cookie)</p>
+                <p>🩷 Язык: Java 21</p>
+                <p>🩷 Сборка: Maven</p>
+            </div>
+        </div>
+
+        <!-- GitHub -->
+        <div class="about-card about-card--center">
+            <h2 class="about-card__title">GitHub</h2>
+            <a href="https://github.com/beshbelka/delivery-service"
+               class="github-link"
+               target="_blank"
+               rel="noopener">
+                github.com/beshbelka/delivery-service
+            </a>
+        </div>
+
+    </div>
+</section>
+
+@@include('partials/footer.html')
+
+</body>
+</html>

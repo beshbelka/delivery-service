@@ -21,3 +21,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         errorEl.hidden = false;
     }
 });
+
+fetch('/auth/profile', { credentials: 'include' })
+    .then(r => { if (r.ok) location.href = '/profile'; });

@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -34,9 +35,8 @@ public class AuthController {
     }
 
     @GetMapping("/profile")
-    public ApiResponse getUserData(HttpServletRequest request) {
-        String token = tokenService.extractTokenFromCookies(request);
-        String login = tokenService.extractLogin(token);
+    public ApiResponse getUserData(Authentication authentication) {
+        String login = authentication.getName();
         UserDataResponse response = authService.getUserData(login);
         Map<String, Object> data = new HashMap<>();
         data.put("login", response.login());
