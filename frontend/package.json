@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "build": "gulp build",
-    "watch": "gulp watch"
+    "watch": "gulp watch",
+    "watch:docker": "gulp build && gulp watchOnly"
   },
   "devDependencies": {
     "gulp": "^4.0.2",

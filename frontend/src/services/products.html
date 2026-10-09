@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Продукты — Котобус</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/services.css">
+</head>
+<body>
+
+@@include('../partials/header.html')
+
+<main class="service-page service-page--products">
+
+    <!-- Hero услуги -->
+    <section class="service-hero service-hero--peach">
+        <div class="container">
+
+            <a href="/" class="back-link">← На главную</a>
+
+            <div class="service-hero__content">
+                <span class="service-hero__icon">🛒</span>
+                <h1 class="service-hero__title">Продукты</h1>
+                <p class="service-hero__subtitle">
+                    Купим и привезём всё из магазина у дома.
+                    Свежее, вовремя, без очередей.
+                </p>
+                <span class="service-hero__price">от 99 ₽</span>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Каталог -->
+    <section class="catalog">
+        <div class="container">
+
+            <h2 class="section-title">Популярное</h2>
+
+            <div class="catalog__grid">
+
+                <div class="product">
+                    <div class="product__image">🍞</div>
+                    <div class="product__body">
+                        <h3 class="product__title">Хлеб бородинский</h3>
+                        <p class="product__text">Свежая выпечка, 400 г</p>
+                        <div class="product__footer">
+                            <span class="product__price">59 ₽</span>
+                            <button class="btn btn--primary product__btn" type="button">В корзину</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product">
+                    <div class="product__image">🥛</div>
+                    <div class="product__body">
+                        <h3 class="product__title">Молоко 3,2%</h3>
+                        <p class="product__text">Пастеризованное, 1 л</p>
+                        <div class="product__footer">
+                            <span class="product__price">89 ₽</span>
+                            <button class="btn btn--primary product__btn" type="button">В корзину</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product">
+                    <div class="product__image">🥚</div>
+                    <div class="product__body">
+                        <h3 class="product__title">Яйца куриные С1</h3>
+                        <p class="product__text">10 штук, отборные</p>
+                        <div class="product__footer">
+                            <span class="product__price">119 ₽</span>
+                            <button class="btn btn--primary product__btn" type="button">В корзину</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product">
+                    <div class="product__image">🧀</div>
+                    <div class="product__body">
+                        <h3 class="product__title">Сыр Российский</h3>
+                        <p class="product__text">Полутвёрдый, 200 г</p>
+                        <div class="product__footer">
+                            <span class="product__price">219 ₽</span>
+                            <button class="btn btn--primary product__btn" type="button">В корзину</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product">
+                    <div class="product__image">🍎</div>
+                    <div class="product__body">
+                        <h3 class="product__title">Яблоки Гала</h3>
+                        <p class="product__text">Свежие, 1 кг</p>
+                        <div class="product__footer">
+                            <span class="product__price">139 ₽</span>
+                            <button class="btn btn--primary product__btn" type="button">В корзину</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product">
+                    <div class="product__image">🍌</div>
+                    <div class="product__body">
+                        <h3 class="product__title">Бананы</h3>
+                        <p class="product__text">Спелые, 1 кг</p>
+                        <div class="product__footer">
+                            <span class="product__price">99 ₽</span>
+                            <button class="btn btn--primary product__btn" type="button">В корзину</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product">
+                    <div class="product__image">🥩</div>
+                    <div class="product__body">
+                        <h3 class="product__title">Куриная грудка</h3>
+                        <p class="product__text">Охлаждённая, 500 г</p>
+                        <div class="product__footer">
+                            <span class="product__price">249 ₽</span>
+                            <button class="btn btn--primary product__btn" type="button">В корзину</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product">
+                    <div class="product__image">🐟</div>
+                    <div class="product__body">
+                        <h3 class="product__title">Лосось филе</h3>
+                        <p class="product__text">Слабосолёный, 200 г</p>
+                        <div class="product__footer">
+                            <span class="product__price">389 ₽</span>
+                            <button class="btn btn--primary product__btn" type="button">В корзину</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product">
+                    <div class="product__image">🍫</div>
+                    <div class="product__body">
+                        <h3 class="product__title">Шоколад молочный</h3>
+                        <p class="product__text">Плитка, 90 г</p>
+                        <div class="product__footer">
+                            <span class="product__price">79 ₽</span>
+                            <button class="btn btn--primary product__btn" type="button">В корзину</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+@@include('../partials/footer.html')
+
+<script src="/js/api.js"></script>
+</body>
+</html>

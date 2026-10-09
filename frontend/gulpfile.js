@@ -21,8 +21,7 @@ function html() {
 
 function assets() {
     return gulp.src(STATIC_SRC)
-        .pipe(gulp.dest(DEST))
-        .pipe(browserSync.stream());
+        .pipe(gulp.dest(DEST));
 }
 
 const build = gulp.series(html, assets);
@@ -42,6 +41,12 @@ function watch() {
     gulp.watch(STATIC_SRC, assets);
 }
 
+function watchOnly() {
+    gulp.watch(['src/**/*.html'], html);
+    gulp.watch(STATIC_SRC, assets);
+}
+
+exports.watchOnly = watchOnly;
 exports.build = build;
 exports.watch = gulp.series(build, serve, watch);
 exports.default = build;
