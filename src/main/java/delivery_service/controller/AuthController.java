@@ -3,6 +3,7 @@ package delivery_service.controller;
 import delivery_service.ApiResponse;
 import delivery_service.DTO.request.LoginRequest;
 import delivery_service.DTO.request.RegisterRequest;
+import delivery_service.DTO.response.OrdersResponse;
 import delivery_service.DTO.response.UserDataResponse;
 import delivery_service.service.AuthService;
 import delivery_service.service.BlacklistService;
@@ -35,13 +36,32 @@ public class AuthController {
     }
 
     @GetMapping("/profile")
+    public ApiResponse getAuth(Authentication authentication) {
+        if (authentication.isAuthenticated()) {
+            return ApiResponse.success();
+        } else {
+            return ApiResponse.error();
+        }
+    }
+
+    @GetMapping("/user")
     public ApiResponse getUserData(Authentication authentication) {
         String login = authentication.getName();
         UserDataResponse response = authService.getUserData(login);
-        Map<String, Object> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>(3);
         data.put("login", response.login());
         data.put("name", response.name());
         data.put("role", response.role());
+        return ApiResponse.success(data);
+    }
+
+    @GetMapping("/orders")
+    public ApiResponse getOrders(Authentication authentication) {
+        String login = authentication.getName();
+        OrdersResponse response = authService.getOrders(login);
+        Map<String, Object> data = new HashMap<>(2);
+        data.put("count", response.count());
+        data.put("orders", response.orders());
         return ApiResponse.success(data);
     }
 

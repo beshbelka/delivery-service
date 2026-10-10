@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Корзина — Котобус</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/bucket.css">
+</head>
+<body>
+
+@@include('partials/header.html')
+
+<main class="bucket">
+    <div class="container">
+
+        <!-- Заголовок -->
+        <div class="bucket__head">
+            <h1 class="bucket__title">Корзина</h1>
+            <p class="bucket__subtitle">Товары, которые вы выбрали</p>
+        </div>
+
+        <!-- Карточка: содержимое корзины -->
+        <section class="bucket-card">
+            <div class="bucket-card__header">
+                <h2 class="bucket-card__title">Ваш заказ</h2>
+                <div class="bucket-card__meta">
+                    <span class="bucket-card__count" id="cartCount">0</span>
+                </div>
+            </div>
+
+            <!-- Пустая корзина -->
+            <div class="bucket-empty">
+                <p>В корзине пока ничего нет.</p>
+                <a href="/#services" class="btn btn--primary">Выбрать услугу</a>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+@@include('partials/footer.html')
+
+</body>
+</html>

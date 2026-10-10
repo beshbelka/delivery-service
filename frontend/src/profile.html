@@ -76,7 +76,10 @@
         <section class="profile-card">
             <div class="profile-card__header">
                 <h2 class="profile-card__title">Мои заказы</h2>
-                <span class="profile-card__count" id="ordersCount">0</span>
+                <div class="profile-card__meta">
+                    <a href="/bucket" class="profile-card__link">🛒 Корзина</a>
+                    <span class="profile-card__count" id="ordersCount">0</span>
+                </div>
             </div>
 
             <div class="orders" id="ordersList">
@@ -85,7 +88,7 @@
 
             <div class="orders-empty" id="ordersEmpty">
                 <p>У вас пока нет заказов.</p>
-                <a href="/" class="btn btn--primary">Оформить доставку</a>
+                <a href="/#services" class="btn btn--primary">Оформить доставку</a>
             </div>
         </section>
 

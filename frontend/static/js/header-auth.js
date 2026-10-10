@@ -15,8 +15,7 @@
     fetch('/auth/profile', { credentials: 'include' })
         .then(res => res.ok ? res.json() : null)
         .then(data => {
-            const d = data && data.data;
-            if (d && d.login && d.name && d.role) {
+            if (data && data.success) {
                 renderAuthorized();
             } else {
                 renderGuest();

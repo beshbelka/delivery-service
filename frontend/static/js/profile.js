@@ -51,7 +51,7 @@
             renderUser(currentUser);
         } else {
             try {
-                const res = await API.get('/auth/profile');
+                const res = await API.get('/auth/user');
 
                 // ApiResponse: { success, code, message, data: {login, name, role} }
                 if (!res || !res.success || !res.data) {
@@ -92,16 +92,21 @@
     // ---------- Orders ----------
     async function loadOrders() {
         try {
-            const res = await API.get('/api/orders');
+            const res = await API.get('/auth/orders');
+            if (!res || !res.success) {
+                renderOrders([], 0);
+                return;
+            }
             const orders = (res.data && res.data.orders) || [];
-            renderOrders(orders);
+            const count  = (res.data && res.data.count)  ?? orders.length;
+            renderOrders(orders, count);
         } catch (err) {
-            renderOrders([]);
+            renderOrders([], 0);
         }
     }
 
-    function renderOrders(orders) {
-        els.ordersCount.textContent = orders.length;
+    function renderOrders(orders, count = orders.length) {
+        els.ordersCount.textContent = count;
 
         if (!orders.length) {
             els.ordersList.innerHTML = '';

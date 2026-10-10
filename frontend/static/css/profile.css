@@ -59,6 +59,35 @@
     font-weight: 700;
 }
 
+.profile-card__meta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.profile-card__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 30px;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    color: #3f6a56;
+    background: var(--mint);
+    border: none;
+    transition: background .15s, color .15s, box-shadow .15s;
+}
+
+.profile-card__link:hover {
+    background: var(--mint-deep);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(95, 163, 131, 0.35);
+}
+
 /* ---------- Info block ---------- */
 .profile-info {
     display: grid;

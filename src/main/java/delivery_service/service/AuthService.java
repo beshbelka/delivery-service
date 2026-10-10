@@ -1,24 +1,19 @@
 package delivery_service.service;
 
-import delivery_service.ApiResponse;
 import delivery_service.DTO.request.LoginRequest;
 import delivery_service.DTO.request.RegisterRequest;
+import delivery_service.DTO.response.OrdersResponse;
 import delivery_service.DTO.response.UserDataResponse;
 import delivery_service.entity.User;
 import delivery_service.enums.USER_ROLE;
-import delivery_service.exception.BaseException;
 import delivery_service.exception.LoginAlreadyTakenException;
 import delivery_service.exception.LoginFailedException;
 import delivery_service.exception.UserNotFoundException;
 import delivery_service.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -57,5 +52,13 @@ public class AuthService {
             throw new LoginFailedException();
         }
         return tokenService.generateToken(request.login(), user.getRole());
+    }
+
+    public OrdersResponse getOrders(String login) {
+        User user = userRepository.findByLogin(login).orElseThrow(UserNotFoundException::new);
+        return new OrdersResponse(
+                user.getOrders().size(),
+                user.getOrders()
+        );
     }
 }
