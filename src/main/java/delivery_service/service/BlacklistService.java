@@ -11,8 +11,11 @@ import java.time.Duration;
 public class BlacklistService {
 
     private final StringRedisTemplate redis;
+    private final TokenService tokenService;
 
-    public void add(String jti, Duration ttl) {
+    public void add(String token) {
+        String jti = tokenService.extractJti(token);
+        Duration ttl = tokenService.getRemainingTtl(token);
         redis.opsForValue().set("blacklist:" + jti, "1", ttl);
     }
 

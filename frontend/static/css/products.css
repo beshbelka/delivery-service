@@ -1,0 +1,41 @@
+/* ---------- Products page ---------- */
+
+/* Лёгкий акцент на карточках: у продуктов чаще смотрят на цену */
+.service-page--products .product__price {
+    color: var(--peach-deep);
+}
+
+/* Если карточка кликабельна (например, ведёт на подробную) */
+.service-page--products .product {
+    cursor: pointer;
+}
+
+/* Заголовок раздела с лёгким акцентом цвета услуги */
+.service-page--products .section-title {
+    position: relative;
+    padding-left: 16px;
+}
+
+.service-page--products .section-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 5px;
+    border-radius: 999px;
+    background: var(--peach-deep);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 720px) {
+    .service-page--products .section-title {
+        padding-left: 12px;
+    }
+
+    .service-page--products .section-title::before {
+        width: 4px;
+        top: 4px;
+        bottom: 4px;
+    }
+}

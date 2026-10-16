@@ -14,6 +14,151 @@
 
     let currentUser = null;
 
+// ---------- Password modal ----------
+    const pwdModal     = document.getElementById('passwordModal');
+    const pwdForm      = document.getElementById('passwordForm');
+    const pwdError     = document.getElementById('passwordError');
+    const inpCurrent   = document.getElementById('currentPassword');
+    const inpNew1      = document.getElementById('newPassword');
+    const inpNew2      = document.getElementById('newPassword2');
+    const changePwdBtn = document.getElementById('changePasswordBtn');
+
+// цвета из палитры style.css (rose-deep и border)
+    const COLOR_ERROR   = '#d16e83';
+    const COLOR_INVALID = '#d16e83';
+
+    function openModal(id) {
+        const m = document.getElementById(id);
+        if (m) m.style.display = 'flex';
+    }
+
+    function closeModal(id) {
+        const m = document.getElementById(id);
+        if (m) m.style.display = 'none';
+    }
+
+    function showPasswordError(msg) {
+        pwdError.textContent = msg;
+        pwdError.style.display = 'block';
+    }
+
+    function clearPasswordError() {
+        pwdError.textContent = '';
+        pwdError.style.display = 'none';
+        [inpCurrent, inpNew1, inpNew2].forEach(i => {
+            i.style.borderColor = '';
+            i.style.outlineColor = '';
+        });
+    }
+
+    function resetPasswordForm() {
+        pwdForm.reset();
+        clearPasswordError();
+    }
+
+// Открытие
+    changePwdBtn.addEventListener('click', () => {
+        resetPasswordForm();
+        openModal('passwordModal');
+        inpCurrent.focus();
+    });
+
+// Закрытие: overlay + крестик + кнопка «Отмена»
+    pwdModal.addEventListener('click', (e) => {
+        if (e.target.closest('[data-close="passwordModal"]')) {
+            closeModal('passwordModal');
+            resetPasswordForm();
+        }
+    });
+
+// Закрытие по Esc
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && pwdModal.style.display === 'flex') {
+            closeModal('passwordModal');
+            resetPasswordForm();
+        }
+    });
+
+// Валидация
+    function validatePasswordForm() {
+        clearPasswordError();
+
+        const oldPass  = inpCurrent.value;
+        const newPass1 = inpNew1.value;
+        const newPass2 = inpNew2.value;
+
+        let invalid = false;
+
+        if (oldPass.length < 6) {
+            inpCurrent.style.borderColor = COLOR_INVALID;
+            invalid = true;
+        }
+        if (newPass1.length < 6) {
+            inpNew1.style.borderColor = COLOR_INVALID;
+            invalid = true;
+        }
+        if (newPass2.length < 6) {
+            inpNew2.style.borderColor = COLOR_INVALID;
+            invalid = true;
+        }
+
+        if (invalid) {
+            showPasswordError('Длина каждого пароля должна быть не менее 6 символов');
+            return null;
+        }
+
+        if (newPass1 !== newPass2) {
+            inpNew1.style.borderColor = COLOR_INVALID;
+            inpNew2.style.borderColor = COLOR_INVALID;
+            showPasswordError('Новые пароли не совпадают');
+            return null;
+        }
+
+        if (newPass1 === oldPass) {
+            inpNew1.style.borderColor = COLOR_INVALID;
+            showPasswordError('Новый пароль должен отличаться от текущего');
+            return null;
+        }
+
+        return { oldPass, newPass1, newPass2 };
+    }
+
+// Снятие подсветки при вводе
+    [inpCurrent, inpNew1, inpNew2].forEach(inp => {
+        inp.addEventListener('input', () => {
+            inp.style.borderColor = '';
+            clearPasswordError();
+        });
+    });
+
+// Отправка
+    pwdForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const payload = validatePasswordForm();
+        if (!payload) return;
+
+        const submitBtn = pwdForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+
+        try {
+            const res = await API.post('/auth/changePassword', payload);
+
+            // ApiResponse: { success, code, message, data }
+            if (res && res.success === true) {
+                closeModal('passwordModal');
+                resetPasswordForm();
+                window.location.reload();
+            } else {
+                showPasswordError((res && res.message) || 'Не удалось сменить пароль');
+            }
+        } catch (err) {
+            showPasswordError(err.message || 'Ошибка сервера');
+        } finally {
+            submitBtn.disabled = false;
+        }
+    });
+
     // ---------- Notification ----------
     function notify(message, isError = false) {
         els.notification.textContent = message;

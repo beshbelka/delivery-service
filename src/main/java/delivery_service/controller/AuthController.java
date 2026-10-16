@@ -1,10 +1,12 @@
 package delivery_service.controller;
 
 import delivery_service.ApiResponse;
+import delivery_service.DTO.request.ChangePasswordRequest;
 import delivery_service.DTO.request.LoginRequest;
 import delivery_service.DTO.request.RegisterRequest;
 import delivery_service.DTO.response.OrdersResponse;
 import delivery_service.DTO.response.UserDataResponse;
+import delivery_service.entity.User;
 import delivery_service.service.AuthService;
 import delivery_service.service.BlacklistService;
 import delivery_service.service.TokenService;
@@ -77,11 +79,31 @@ public class AuthController {
     public ApiResponse logout(HttpServletRequest request, HttpServletResponse response) {
         String token = tokenService.extractTokenFromCookies(request);
         if (token != null) {
-            String jti = tokenService.extractJti(token);
-            Duration ttl = tokenService.getRemainingTtl(token);
-            blacklistService.add(jti, ttl);
+            blacklistService.add(token);
         }
         tokenService.clearTokenCookie(response);
         return ApiResponse.success();
+    }
+
+    @PostMapping("/changePassword")
+    public ApiResponse changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,
+                                      Authentication authentication,
+                                      HttpServletRequest request,
+                                      HttpServletResponse response) {
+        String oldPass = changePasswordRequest.oldPass();
+        String newPass1 = changePasswordRequest.newPass1();
+        String login = authentication.getName();
+        User user = authService.verifyPassword(login, oldPass);
+        if (user != null) {
+            authService.changePassword(user, newPass1);
+            String token = tokenService.extractTokenFromCookies(request);
+            blacklistService.add(token);
+            tokenService.clearTokenCookie(response);
+            token = tokenService.generateToken(login);
+            tokenService.addTokenCookie(response, token);
+            return ApiResponse.success();
+        } else {
+            return ApiResponse.error(400, "Старый пароль не совпадает");
+        }
     }
 }

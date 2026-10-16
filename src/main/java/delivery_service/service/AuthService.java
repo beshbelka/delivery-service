@@ -61,4 +61,18 @@ public class AuthService {
                 user.getOrders()
         );
     }
+
+    public User verifyPassword(String login, String oldPass) {
+        User user = userRepository.findByLogin(login).orElseThrow(UserNotFoundException::new);
+        if (passwordEncoder.matches(oldPass, user.getPassword())) {
+            return user;
+        } else {
+            return null;
+        }
+    }
+
+    public void changePassword(User user, String newPass1) {
+        user.setPassword(passwordEncoder.encode(newPass1));
+        userRepository.save(user);
+    }
 }

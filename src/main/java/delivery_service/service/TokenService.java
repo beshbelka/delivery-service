@@ -1,5 +1,6 @@
 package delivery_service.service;
 
+import delivery_service.entity.User;
 import delivery_service.enums.USER_ROLE;
 import delivery_service.exception.InvalidTokenException;
 import delivery_service.exception.LoginIsNullException;
@@ -10,6 +11,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,7 @@ import java.util.UUID;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class TokenService {
 
     @Value("${secret}")
@@ -35,6 +38,8 @@ public class TokenService {
 
     @Value("${expiration}")
     private int tokenExpiration;
+
+    private final UserService userService;
 
     private SecretKey getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -52,6 +57,12 @@ public class TokenService {
                 .expiration(new Date(System.currentTimeMillis() + tokenExpiration))
                 .signWith(getSigningKey())
                 .compact();
+    }
+
+    public String generateToken(String login) {
+        User user = userService.findByLogin(login);
+        USER_ROLE role = user.getRole();
+        return generateToken(login, role);
     }
 
     public void addTokenCookie(HttpServletResponse response, String token) {
