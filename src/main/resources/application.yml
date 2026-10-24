@@ -35,6 +35,8 @@ logging:
   level:
     org.springframework.security: DEBUG
     org.springframework.security.web: DEBUG
+    org.springframework.jdbc.datasource.init: DEBUG
+    org.springframework.boot.autoconfigure.sql.init: DEBUG
 
 secret: L7j/9tPqi+CRvydIyWF71HYD4L9ymUhAskSmrfeyrEU=
 expiration: 604800000
