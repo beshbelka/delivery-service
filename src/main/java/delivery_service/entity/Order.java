@@ -1,5 +1,7 @@
 package delivery_service.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import delivery_service.enums.ITEM_TYPE;
 import delivery_service.enums.ORDER_STATUS;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,6 +29,7 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -35,8 +38,20 @@ public class Order {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ITEM_TYPE type;
+
     public void addItem(OrderItem item) {
         items.add(item);
         item.setOrder(this);
+    }
+
+    public static Order cart(User user, ITEM_TYPE type) {
+        Order cart = new Order();
+        cart.setUser(user);
+        cart.setStatus(ORDER_STATUS.CART);
+        cart.setType(type);
+        return cart;
     }
 }

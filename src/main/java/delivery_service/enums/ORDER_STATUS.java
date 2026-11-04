@@ -1,6 +1,7 @@
 package delivery_service.enums;
 
 public enum ORDER_STATUS {
+    CART,
     CREATED,
     PAID,
     PREPARING,

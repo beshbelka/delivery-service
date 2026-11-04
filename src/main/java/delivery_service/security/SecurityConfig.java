@@ -49,6 +49,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(pages -> pages
                         .requestMatchers(Path.ANONYMOUS).anonymous()
+                        .requestMatchers(Path.PERMIT_ALL).permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(exceptions -> exceptions
                         .accessDeniedHandler((request, response, accessDeniedException) -> {

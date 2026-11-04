@@ -1,7 +1,9 @@
 package delivery_service.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import delivery_service.enums.ITEM_TYPE;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +21,7 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonIgnore
     private Order order;
 
     @Column(name = "item_id", nullable = false)
@@ -30,5 +33,12 @@ public class OrderItem {
 
     @Column(nullable = false)
     private int quantity;
+
+    @Column(nullable = false)
+    @Min(1)
+    private double price;
+
+    @Column(nullable = false)
+    private String name;
 
 }

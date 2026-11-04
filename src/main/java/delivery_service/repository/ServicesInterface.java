@@ -3,6 +3,7 @@ package delivery_service.repository;
 import delivery_service.entity.BaseItem;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ServicesInterface {
 
@@ -10,4 +11,5 @@ public interface ServicesInterface {
 
     String getType();
 
+    BaseItem findBySku(String sku);
 }

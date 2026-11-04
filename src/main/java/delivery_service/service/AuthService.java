@@ -4,6 +4,7 @@ import delivery_service.DTO.request.LoginRequest;
 import delivery_service.DTO.request.RegisterRequest;
 import delivery_service.DTO.response.OrdersResponse;
 import delivery_service.DTO.response.UserDataResponse;
+import delivery_service.entity.Order;
 import delivery_service.entity.User;
 import delivery_service.enums.USER_ROLE;
 import delivery_service.exception.LoginAlreadyTakenException;
@@ -15,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -22,6 +25,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
+    private final OrderService orderService;
 
     @Transactional
     public String register(RegisterRequest request) {
@@ -56,9 +60,10 @@ public class AuthService {
 
     public OrdersResponse getOrders(String login) {
         User user = userRepository.findByLogin(login).orElseThrow(UserNotFoundException::new);
+        List<Order> orders = orderService.getUserOrders(user);
         return new OrdersResponse(
-                user.getOrders().size(),
-                user.getOrders()
+                orders.size(),
+                orders
         );
     }
 

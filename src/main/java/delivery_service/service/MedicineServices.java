@@ -28,4 +28,9 @@ public class MedicineServices implements ServicesInterface {
     public String getType() {
         return "medicine";
     }
+
+    @Override
+    public Medicine findBySku(String sku) {
+        return medicineRepository.findBySku(sku).orElseThrow(NoItemsException::new);
+    }
 }

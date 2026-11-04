@@ -29,4 +29,9 @@ public class ProductServices implements ServicesInterface {
     public String getType() {
         return "product";
     }
+
+    @Override
+    public Product findBySku(String sku) {
+        return productRepository.findBysku(sku).orElseThrow(NoItemsException::new);
+    }
 }

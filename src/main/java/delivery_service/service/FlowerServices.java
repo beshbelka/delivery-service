@@ -1,5 +1,6 @@
 package delivery_service.service;
 
+import delivery_service.entity.BaseItem;
 import delivery_service.entity.Flower;
 import delivery_service.exception.NoItemsException;
 import delivery_service.repository.FlowerRepository;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,5 +29,10 @@ public class FlowerServices implements ServicesInterface {
     @Override
     public String getType() {
         return "flower";
+    }
+
+    @Override
+    public Flower findBySku(String sku) {
+        return flowerRepository.findBySku(sku).orElseThrow(NoItemsException::new);
     }
 }

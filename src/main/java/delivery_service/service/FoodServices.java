@@ -28,4 +28,9 @@ public class FoodServices implements ServicesInterface {
     public String getType() {
         return "food";
     }
+
+    @Override
+    public Food findBySku(String sku) {
+        return foodRepository.findBySku(sku).orElseThrow(NoItemsException::new);
+    }
 }

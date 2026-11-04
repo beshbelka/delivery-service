@@ -6,4 +6,8 @@ public class Path {
             "/auth/login",
             "/auth/register"
     };
+
+    public static final String[] PERMIT_ALL = {
+            "/services/data/**"
+    };
 }
