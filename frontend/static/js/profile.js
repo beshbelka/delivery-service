@@ -308,6 +308,7 @@
                 localStorage.removeItem('login');
                 localStorage.removeItem('name');
                 localStorage.removeItem('role');
+                localStorage.removeItem('isAuthenticated');
                 window.location.href = '/';
             } else {
                 notify('Ошибка сервера', true);

@@ -6,6 +6,17 @@
     <title>Корзина — Котобус</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/bucket.css">
+    <script>
+        const flag = localStorage.getItem('isAuthenticated');
+        if (flag !== 'true') {
+            location.replace('/login');
+        } else {
+            fetch('/auth/profile', { credentials: 'include' })
+                .then(r => {
+                    if (r.status === 401) location.replace('/login');
+                });
+        }
+    </script>
 </head>
 <body>
 

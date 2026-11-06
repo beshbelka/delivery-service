@@ -11,6 +11,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     try {
         const res = await API.post('/auth/login', { login, password });
         if (res.success) {
+            localStorage.setItem('isAuthenticated', 'true')
             window.location.href = '/profile';
         } else {
             errorEl.textContent = res.message;

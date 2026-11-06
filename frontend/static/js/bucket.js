@@ -71,7 +71,7 @@ function renderBucket(container, bucketData, categoryNames) {
                 <div class="bucket-item">
                     <div class="bucket-item__image">🩷</div>
                     <div class="bucket-item__info">
-                        <div class="bucket-item__name">Товар #${item.itemId}</div>
+                        <div class="bucket-item__name">${item.name}</div>
                         <div class="bucket-item__price">${item.price} ₽ / шт.</div>
                     </div>
                     <div class="bucket-item__quantity">x ${item.quantity}</div>
