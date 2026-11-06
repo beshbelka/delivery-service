@@ -11,5 +11,5 @@ public interface ServicesInterface {
 
     String getType();
 
-    BaseItem findBySku(String sku);
+    Optional<? extends BaseItem> findBySku(String sku);
 }

@@ -1,14 +1,15 @@
 package delivery_service.service;
 
+import delivery_service.entity.BaseItem;
 import delivery_service.entity.Product;
 import delivery_service.exception.NoItemsException;
 import delivery_service.repository.ProductRepository;
 import delivery_service.repository.ServicesInterface;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,7 @@ public class ProductServices implements ServicesInterface {
     }
 
     @Override
-    public Product findBySku(String sku) {
-        return productRepository.findBysku(sku).orElseThrow(NoItemsException::new);
+    public Optional<Product> findBySku(String sku) {
+        return productRepository.findBysku(sku);
     }
 }

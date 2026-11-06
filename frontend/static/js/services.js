@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Берем тип из URL: /services/food -> "food"
     const pathParts = window.location.pathname.split('/').filter(Boolean);
     const type = pathParts[pathParts.length - 1];
 
@@ -22,13 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const items = res.data ? res.data.items : null;
+            const bucketSkus = res.data?.bucket || []; // <--- Получаем список из корзины
 
             if (!items || !Array.isArray(items) || items.length === 0) {
                 showMessage(catalogGrid, res.message || 'Товаров пока нет 🩷');
                 return;
             }
 
-            renderItems(catalogGrid, items);
+            renderItems(catalogGrid, items, bucketSkus); // <--- Передаем в рендер
         })
         .catch(err => {
             console.error('Ошибка запроса:', err);
@@ -37,33 +37,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 3. Делегированный обработчик "В корзину"
     catalogGrid.addEventListener('click', (e) => {
-        const btn = e.target.closest('.product__btn');
-        if (!btn) return;
+        // Если нажали на кнопку "В корзину"
+        const addBtn = e.target.closest('.product__btn--add');
+        if (addBtn) {
+            const product = addBtn.closest('.product');
+            const sku = product?.dataset.sku;
+            if (!sku) return;
 
-        const product = btn.closest('.product');
-        const sku = product?.dataset.sku;
-        if (!sku) return;
+            addBtn.disabled = true;
 
-        btn.disabled = true;
-
-        API.post('/api/services/add', { sku })
-            .then(res => {
-                if (!res || !res.success) {
-                    notify((res && res.message) || 'Не удалось добавить в корзину');
-                    return;
-                }
-                notify(res.message || 'Добавлено в корзину');
-            })
-            .catch(err => {
-                notify(err.message || 'Не удалось добавить в корзину');
-            })
-            .finally(() => {
-                btn.disabled = false;
-            });
+            API.post('/api/services/add', { sku })
+                .then(res => {
+                    if (!res || !res.success) {
+                        notify((res && res.message) || 'Не удалось добавить в корзину');
+                        return;
+                    }
+                    notify(res.message || 'Добавлено в корзину');
+                    // Меняем кнопку прямо на лету
+                    addBtn.outerHTML = `<a href="/bucket" class="btn product__btn product__btn--in-bucket" style="background: #ccc; color: #666; box-shadow: none;">В корзине</a>`;
+                })
+                .catch(err => {
+                    notify(err.message || 'Не удалось добавить в корзину');
+                })
+                .finally(() => {
+                    addBtn.disabled = false;
+                });
+        }
     });
 });
 
-function renderItems(container, items) {
+function renderItems(container, items, bucketSkus) {
     container.innerHTML = '';
 
     items.forEach(item => {
@@ -73,6 +76,14 @@ function renderItems(container, items) {
 
         const priceStr = item.price != null ? `${item.price} ₽` : 'Цена не указана';
 
+        // Проверяем, есть ли этот SKU в корзине
+        const isInBucket = bucketSkus.includes(item.sku);
+
+        // Рендерим нужную кнопку
+        const buttonHtml = isInBucket
+            ? `<a href="/bucket" class="btn product__btn product__btn--in-bucket" style="background: #ccc; color: #666; box-shadow: none;">В корзине</a>`
+            : `<button class="btn btn--primary product__btn product__btn--add" type="button">В корзину</button>`;
+
         productDiv.innerHTML = `
             <div class="product__image">🩷</div>
             <div class="product__body">
@@ -80,7 +91,7 @@ function renderItems(container, items) {
                 <p class="product__text">${item.description || ''}</p>
                 <div class="product__footer">
                     <span class="product__price">${priceStr}</span>
-                    <button class="btn btn--primary product__btn" type="button">В корзину</button>
+                    ${buttonHtml}
                 </div>
             </div>
         `;

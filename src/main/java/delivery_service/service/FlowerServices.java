@@ -32,7 +32,7 @@ public class FlowerServices implements ServicesInterface {
     }
 
     @Override
-    public Flower findBySku(String sku) {
-        return flowerRepository.findBySku(sku).orElseThrow(NoItemsException::new);
+    public Optional<Flower> findBySku(String sku) {
+        return flowerRepository.findBySku(sku);
     }
 }

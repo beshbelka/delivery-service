@@ -203,3 +203,49 @@
         bottom: 14px;
     }
 }
+
+/* Обертка для кнопок + и - */
+.bucket-item__quantity-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 20px;
+}
+
+/* Кнопки + и - */
+.qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.qty-btn:hover {
+    background: var(--bg);
+    border-color: var(--text-muted);
+}
+
+.qty-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Обновляем стиль для самого количества */
+.bucket-item__quantity {
+    font-size: 15px;
+    font-weight: 600;
+    min-width: 20px;
+    text-align: center;
+    margin: 0;
+    background: transparent; /* Убрали серый фон, так как теперь есть кнопки */
+    padding: 0;
+}

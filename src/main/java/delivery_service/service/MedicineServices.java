@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class MedicineServices implements ServicesInterface {
     }
 
     @Override
-    public Medicine findBySku(String sku) {
-        return medicineRepository.findBySku(sku).orElseThrow(NoItemsException::new);
+    public Optional<Medicine> findBySku(String sku) {
+        return medicineRepository.findBySku(sku);
     }
 }
