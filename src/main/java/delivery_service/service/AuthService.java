@@ -5,6 +5,7 @@ import delivery_service.DTO.request.RegisterRequest;
 import delivery_service.DTO.response.OrdersResponse;
 import delivery_service.DTO.response.UserDataResponse;
 import delivery_service.entity.Order;
+import delivery_service.entity.OrderPart;
 import delivery_service.entity.User;
 import delivery_service.enums.USER_ROLE;
 import delivery_service.exception.LoginAlreadyTakenException;

@@ -1,6 +1,7 @@
 package delivery_service.DTO.response;
 
 import delivery_service.entity.Order;
+import delivery_service.entity.OrderPart;
 
 import java.util.List;
 

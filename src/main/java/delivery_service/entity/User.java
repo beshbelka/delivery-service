@@ -1,5 +1,6 @@
 package delivery_service.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import delivery_service.enums.USER_ROLE;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,9 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -32,11 +31,12 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Order> orders = new ArrayList<>();
-
     @Enumerated(EnumType.STRING)
     private USER_ROLE role;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private Set<Order> orders = new HashSet<>();
 
     @NullMarked
     @Override
@@ -55,7 +55,6 @@ public class User implements UserDetails {
         this.name = name;
         this.password = password;
         this.role = USER_ROLE.USER;
-        this.orders = new ArrayList<>();
     }
 
     public String getFormattedRole() {

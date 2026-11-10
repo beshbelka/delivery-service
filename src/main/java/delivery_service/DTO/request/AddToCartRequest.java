@@ -2,11 +2,11 @@ package delivery_service.DTO.request;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record AddToBucketRequest(
+public record AddToCartRequest(
         @NotBlank String sku,
-        @NotBlank Integer count
+        Integer count
 ) {
-    public AddToBucketRequest {
+    public AddToCartRequest {
         if (count == null) {
             count = 1;
         }

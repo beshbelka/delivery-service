@@ -7,7 +7,7 @@
         link.textContent = 'Личный кабинет';
         link.setAttribute('href', '/profile');
         bucket.textContent = 'Корзина';
-        bucket.setAttribute('href', '/bucket');
+        bucket.setAttribute('href', '/cart');
         bucket.setAttribute('style', 'visibility: visible');
     }
 

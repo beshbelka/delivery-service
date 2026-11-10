@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="bucket-empty"><p>Загрузка...</p></div>
         `;
 
-        API.get('/api/order/bucket')
+        API.get('/api/order/cart')
             .then(res => {
                 if (!res || !res.success) {
                     showError(orderCard, res?.message || 'Ошибка загрузки');
@@ -33,6 +33,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     orderCard.addEventListener('click', (e) => {
+        // --- ОБРАБОТКА КНОПКИ "ОФОРМИТЬ ЗАКАЗ" ---
+        const checkoutBtn = e.target.closest('.checkout-btn');
+        if (checkoutBtn) {
+            checkoutBtn.disabled = true;
+            const originalText = checkoutBtn.textContent;
+            checkoutBtn.textContent = 'Оформляем...';
+
+            API.post('/api/order/make')
+                .then(res => {
+                    if (res && res.success) {
+                        alert('Заказ успешно оформлен!');
+                        window.location.reload();
+                    } else {
+                        const code = res?.code || 'Ошибка';
+                        const msg = res?.message || 'Не удалось оформить заказ';
+                        alert(`Ошибка ${code}: ${msg}`);
+                    }
+                })
+                .catch(err => {
+                    alert(`Ошибка ${err.code || 'сети'}: ${err.message}`);
+                })
+                .finally(() => {
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.textContent = originalText;
+                });
+
+            return; // Прерываем дальнейшую обработку клика
+        }
+
+        // --- ОБРАБОТКА КНОПОК + И - ---
         const btn = e.target.closest('.qty-btn');
         if (!btn) return;
 
@@ -80,6 +110,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Если корзина полностью опустела, показываем заглушку
                     if (orderCard.querySelectorAll('.bucket-item').length === 0) {
                         renderBucket(orderCard, {}, categoryNames); // Перерисовываем пустую
+                    } else {
+                        // Если корзина не опустела, пересчитываем итоговую сумму внизу
+                        updateTotalSum();
                     }
                 } else {
                     // Обычное обновление цифр
@@ -90,6 +123,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const priceText = itemDiv.querySelector('.bucket-item__price').textContent;
                     const price = parseFloat(priceText);
                     totalSpan.textContent = `${newQty * price} ₽`;
+
+                    // Пересчитываем общую сумму внизу
+                    updateTotalSum();
                 }
             })
             .catch(err => {
@@ -103,10 +139,31 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     });
 
+    // Функция для пересчета итоговой суммы при изменении количества без полной перерисовки
+    function updateTotalSum() {
+        let total = 0;
+        const items = orderCard.querySelectorAll('.bucket-item');
+        items.forEach(item => {
+            const priceText = item.querySelector('.bucket-item__price').textContent;
+            const price = parseFloat(priceText);
+            const qty = parseInt(item.querySelector('.bucket-item__quantity').textContent, 10);
+            total += price * qty;
+        });
+
+        const totalSpan = orderCard.querySelector('.bucket-footer__total span:last-child');
+        if (totalSpan) {
+            totalSpan.textContent = `${total} ₽`;
+        }
+    }
+
     loadBucket();
 });
 
-function renderBucket(container, bucketData, categoryNames) {
+function renderBucket(container, responseData, categoryNames) {
+    // 1. Достаем саму корзину из ответа
+    const cart = responseData?.cart;
+
+    // 2. Формируем шапку
     let html = `
         <div class="bucket-card__header">
             <h2 class="bucket-card__title">Ваш заказ</h2>
@@ -116,58 +173,80 @@ function renderBucket(container, bucketData, categoryNames) {
 
     let hasItems = false;
     let bodyHtml = '';
+    let totalOrderSum = 0;
 
-    for (const [type, order] of Object.entries(bucketData)) {
-        if (!order || !order.items || order.items.length === 0) continue;
+    // 3. Проверяем, есть ли части в корзине
+    if (cart && cart.parts && cart.parts.length > 0) {
 
-        hasItems = true;
-        const title = categoryNames[type] || type.toUpperCase();
+        // Проходимся по каждой части (Еда, Аптека...)
+        cart.parts.forEach(part => {
+            if (!part.items || part.items.length === 0) return;
 
-        bodyHtml += `
-            <div class="bucket-category">
-                <h3 class="bucket-category__title">${title}</h3>
-                <div class="bucket-items">
-        `;
-
-        order.items.forEach(item => {
-            const totalPrice = item.price * item.quantity;
+            hasItems = true;
+            const type = part.type.toLowerCase(); // "food", "medicine"
+            const title = categoryNames[type] || type.toUpperCase();
 
             bodyHtml += `
-                <div class="bucket-item" data-sku="${item.sku}">
-                    <div class="bucket-item__image">🩷</div>
-                    <div class="bucket-item__info">
-                        <div class="bucket-item__name">${item.name}</div>
-                        <div class="bucket-item__price">${item.price} ₽ / шт.</div>
-                    </div>
-                    
-                    <div class="bucket-item__quantity-wrapper">
-                        <button class="qty-btn" data-action="minus" type="button">−</button>
-                        <span class="bucket-item__quantity">${item.quantity}</span>
-                        <button class="qty-btn" data-action="plus" type="button">+</button>
-                    </div>
-
-                    <div class="bucket-item__total">${totalPrice} ₽</div>
-                </div>
+                <div class="bucket-category">
+                    <h3 class="bucket-category__title">${title}</h3>
+                    <div class="bucket-items">
             `;
-        });
 
-        bodyHtml += `</div></div>`;
+            // Проходимся по товарам внутри части
+            part.items.forEach(item => {
+                const totalPrice = item.price * item.quantity;
+                totalOrderSum += totalPrice;
+
+                bodyHtml += `
+                    <div class="bucket-item" data-sku="${item.sku}">
+                        <div class="bucket-item__image">🩷</div>
+                        <div class="bucket-item__info">
+                            <div class="bucket-item__name">${item.name}</div>
+                            <div class="bucket-item__price">${item.price} ₽ / шт.</div>
+                        </div>
+                        
+                        <div class="bucket-item__quantity-wrapper">
+                            <button class="qty-btn" data-action="minus" type="button">−</button>
+                            <span class="bucket-item__quantity">${item.quantity}</span>
+                            <button class="qty-btn" data-action="plus" type="button">+</button>
+                        </div>
+
+                        <div class="bucket-item__total">${totalPrice} ₽</div>
+                    </div>
+                `;
+            });
+
+            bodyHtml += `</div></div>`;
+        });
     }
 
-    // В шапке больше нет блока со счётчиком, просто закрываем хедер
+    // 4. Собираем всё вместе
+    html += bodyHtml;
+    html += `</div>`; // Закрываем bucket-card__body
+
+    container.innerHTML = html;
+
     if (!hasItems) {
-        html += `
+        container.innerHTML += `
             <div class="bucket-empty">
                 <p>В корзине пока ничего нет.</p>
                 <a href="/#services" class="btn btn--primary">Выбрать услугу</a>
             </div>
         `;
     } else {
-        html += bodyHtml;
+        const footerHtml = `
+            <div class="bucket-footer" style="display: block !important;">
+                <div class="bucket-footer__total">
+                    <span>Итого:</span>
+                    <span>${cart.totalPrice || totalOrderSum} ₽</span>
+                </div>
+                <button class="btn btn--primary btn--full checkout-btn" style="margin-top: 16px;">
+                    Оформить заказ
+                </button>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', footerHtml);
     }
-
-    html += `</div>`;
-    container.innerHTML = html;
 }
 
 function showError(container, text) {

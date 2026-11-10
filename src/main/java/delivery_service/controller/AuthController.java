@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,14 +30,14 @@ public class AuthController {
     private final BlacklistService blacklistService;
 
     @PostMapping("/register")
-    public ApiResponse register(@Valid @RequestBody RegisterRequest request, HttpServletResponse response) {
+    public ApiResponse<Void> register(@Valid @RequestBody RegisterRequest request, HttpServletResponse response) {
         String token = authService.register(request);
         tokenService.addTokenCookie(response, token);
         return ApiResponse.success();
     }
 
     @GetMapping("/profile")
-    public ApiResponse getAuth(Authentication authentication) {
+    public ApiResponse<Void> getAuth(Authentication authentication) {
         if (authentication.isAuthenticated()) {
             return ApiResponse.success();
         } else {
@@ -47,28 +46,18 @@ public class AuthController {
     }
 
     @GetMapping("/user")
-    public ApiResponse getUserData(Authentication authentication) {
+    public ApiResponse<String> getUserData(Authentication authentication) {
         String login = authentication.getName();
         UserDataResponse response = authService.getUserData(login);
-        Map<String, Object> data = new HashMap<>(3);
+        Map<String, String> data = new HashMap<>(3);
         data.put("login", response.login());
         data.put("name", response.name());
         data.put("role", response.role());
         return ApiResponse.success(data);
     }
 
-    @GetMapping("/orders")
-    public ApiResponse getOrders(Authentication authentication) {
-        String login = authentication.getName();
-        OrdersResponse response = authService.getOrders(login);
-        Map<String, Object> data = new HashMap<>(2);
-        data.put("count", response.count());
-        data.put("orders", response.orders());
-        return ApiResponse.success(data);
-    }
-
     @PostMapping("/login")
-    public ApiResponse login(@Valid @RequestBody LoginRequest loginRequest,
+    public ApiResponse<Void> login(@Valid @RequestBody LoginRequest loginRequest,
                                              HttpServletResponse response) {
         String token = authService.login(loginRequest);
         tokenService.addTokenCookie(response,token);
@@ -76,7 +65,7 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ApiResponse logout(HttpServletRequest request, HttpServletResponse response) {
+    public ApiResponse<Void> logout(HttpServletRequest request, HttpServletResponse response) {
         String token = tokenService.extractTokenFromCookies(request);
         if (token != null) {
             blacklistService.add(token);
@@ -86,7 +75,7 @@ public class AuthController {
     }
 
     @PostMapping("/changePassword")
-    public ApiResponse changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,
+    public ApiResponse<Void> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,
                                       Authentication authentication,
                                       HttpServletRequest request,
                                       HttpServletResponse response) {

@@ -237,7 +237,7 @@
     // ---------- Orders ----------
     async function loadOrders() {
         try {
-            const res = await API.get('/auth/orders');
+            const res = await API.get('/api/order/orders');
             if (!res || !res.success) {
                 renderOrders([], 0);
                 return;
@@ -251,45 +251,83 @@
     }
 
     function renderOrders(orders, count = orders.length) {
+        // Обновляем счетчик в заголовке
         els.ordersCount.textContent = count;
 
+        // Очищаем список
+        els.ordersList.innerHTML = '';
+
+        // Если заказов нет — показываем заглушку
         if (!orders.length) {
-            els.ordersList.innerHTML = '';
             els.ordersEmpty.style.display = 'flex';
             return;
         }
 
+        // Если заказы есть — скрываем заглушку и рендерим их
         els.ordersEmpty.style.display = 'none';
         els.ordersList.innerHTML = orders.map(orderTpl).join('');
     }
 
-    function orderTpl(o) {
-        const statusClass = {
-            NEW: 'status--new',
-            IN_PROGRESS: 'status--progress',
-            DONE: 'status--done',
-            CANCELLED: 'status--cancelled',
-        }[o.status] || 'status--new';
+    // Шаблон заказа с выпадающим списком
+    function orderTpl(order) {
+        // Форматируем дату
+        const date = new Date(order.createdAt).toLocaleDateString('ru-RU', {
+            day: 'numeric', month: 'long', year: 'numeric'
+        });
 
+        // Собираем список товаров
+        let itemsHtml = '';
+        if (order.parts) {
+            order.parts.forEach(part => {
+                const typeName = {
+                    'FOOD': 'Еда 🍕',
+                    'MEDICINE': 'Аптека 💊',
+                    'FLOWER': 'Цветы 💐',
+                    'PRODUCT': 'Продукты 🛒'
+                }[part.type] || part.type;
+
+                // Заголовок части
+                itemsHtml += `<div class="order-part-title">${typeName}</div>`;
+
+                // Товары в части
+                if (part.items) {
+                    part.items.forEach(item => {
+                        itemsHtml += `
+                            <div class="order-detail-item">
+                                <span>${escapeHtml(item.name)}</span>
+                                <span class="item-qty">x ${item.quantity}</span>
+                                <span class="item-price">${item.price * item.quantity} ₽</span>
+                            </div>
+                        `;
+                    });
+                }
+            });
+        }
+
+        // Статус заказа
         const statusText = {
-            NEW: 'Новый',
-            IN_PROGRESS: 'В пути',
-            DONE: 'Доставлен',
-            CANCELLED: 'Отменён',
-        }[o.status] || '—';
-
-        const icon = o.icon || '📦';
-        const price = (o.price != null) ? `${o.price} ₽` : '—';
+            CREATED: 'Оформлен',
+            PAID: 'Оплачен',
+            DELIVERED: 'Доставлен',
+            CANCELLED: 'Отменён'
+        }[order.status] || order.status;
 
         return `
-            <div class="order-item">
-                <div class="order-item__icon">${icon}</div>
-                <div class="order-item__body">
-                    <div class="order-item__title">${escapeHtml(o.title || 'Заказ')}</div>
-                    <div class="order-item__meta">${escapeHtml(o.address || '')}</div>
-                    <span class="order-item__status ${statusClass}">${statusText}</span>
+            <div class="order-card">
+                <!-- Шапка заказа (по клику открывается/закрывается) -->
+                <div class="order-card__header" onclick="this.parentElement.classList.toggle('is-open')">
+                    <div class="order-card__title">
+                        <span class="order-arrow">▶</span>
+                        Заказ от ${date}
+                    </div>
+                    <div class="order-card__sum">${order.totalPrice} ₽</div>
                 </div>
-                <div class="order-item__price">${price}</div>
+                
+                <!-- Выпадающий список с товарами -->
+                <div class="order-card__body">
+                    ${itemsHtml}
+                    <div class="order-card__status">Статус: ${statusText}</div>
+                </div>
             </div>
         `;
     }
@@ -297,7 +335,7 @@
     function escapeHtml(str) {
         return String(str).replace(/[&<>"']/g, (s) => ({
             '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-        }[s]));
+        })[s]);
     }
 
     // ---------- Logout ----------

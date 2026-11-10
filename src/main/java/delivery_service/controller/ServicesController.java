@@ -1,10 +1,8 @@
 package delivery_service.controller;
 
 import delivery_service.ApiResponse;
-import delivery_service.DTO.request.AddToBucketRequest;
+import delivery_service.DTO.request.AddToCartRequest;
 import delivery_service.entity.BaseItem;
-import delivery_service.entity.Order;
-import delivery_service.entity.OrderItem;
 import delivery_service.entity.User;
 import delivery_service.enums.ITEM_TYPE;
 import delivery_service.exception.IllegalSkuTypeException;
@@ -14,13 +12,10 @@ import delivery_service.service.SkuTypeService;
 import delivery_service.service.TokenService;
 import delivery_service.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,8 +30,8 @@ public class ServicesController {
     private final OrderService orderService;
 
     @GetMapping("/data/{type}")
-    public ApiResponse getData(@PathVariable String type,
-                               HttpServletRequest request) {
+    public ApiResponse<List<?>> getData(@PathVariable String type,
+                                        HttpServletRequest request) {
         ServicesInterface servicesInterface = services.stream()
                 .filter(s -> s.getType().equalsIgnoreCase(type))
                 .findFirst()
@@ -49,13 +44,13 @@ public class ServicesController {
     }
 
     @PostMapping("/add")
-    public ApiResponse addToBucket(@RequestBody AddToBucketRequest addToBucketRequest,
-                                   HttpServletRequest request) {
-        String sku = addToBucketRequest.sku();
+    public ApiResponse<Void> addToCart(@Valid @RequestBody AddToCartRequest addToCartRequest,
+                                 HttpServletRequest request) {
+        String sku = addToCartRequest.sku();
         ITEM_TYPE type = SkuTypeService.getTypeOfSku(sku);
         String token = tokenService.extractTokenFromCookies(request);
         String login = tokenService.extractLogin(token);
-        orderService.addToCart(login, sku, type, addToBucketRequest.count());
+        orderService.addToCart(login, sku, type, addToCartRequest.count());
         return ApiResponse.success();
     }
 }
