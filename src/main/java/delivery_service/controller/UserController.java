@@ -70,4 +70,12 @@ public class UserController {
         userService.editProfile(login, editProfileRequest);
         return ApiResponse.success();
     }
+
+    @PostMapping("/delete")
+    public ApiResponse<Void> deleteAccount(Authentication authentication, HttpServletResponse response) {
+        String login = authentication.getName();
+        userService.deleteAccount(login);
+        tokenService.clearTokenCookie(response);
+        return ApiResponse.success();
+    }
 }

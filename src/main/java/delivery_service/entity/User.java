@@ -55,6 +55,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String color;
 
+    @Column(nullable = false)
+    private boolean isActive = true;
+
     public User (String login, String name, String password) {
         this.login = login;
         this.name = name;

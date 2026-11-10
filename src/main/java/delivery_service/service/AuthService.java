@@ -8,6 +8,7 @@ import delivery_service.entity.Order;
 import delivery_service.entity.OrderPart;
 import delivery_service.entity.User;
 import delivery_service.enums.USER_ROLE;
+import delivery_service.exception.AccountDeletedException;
 import delivery_service.exception.LoginAlreadyTakenException;
 import delivery_service.exception.LoginFailedException;
 import delivery_service.exception.UserNotFoundException;
@@ -44,6 +45,7 @@ public class AuthService {
 
     public String login(LoginRequest request) {
         User user = userRepository.findByLogin(request.login()).orElseThrow(LoginFailedException::new);
+        if (!user.isActive()) throw new AccountDeletedException();
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new LoginFailedException();
         }

@@ -424,5 +424,47 @@
 
     els.logoutBtn.addEventListener('click', logout);
 
+    // ---------- Delete Account ----------
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+
+    if (deleteAccountBtn) {
+        deleteAccountBtn.addEventListener('click', async () => {
+            // 1. Спрашиваем подтверждение
+            const confirmed = confirm('Вы уверены, что хотите удалить аккаунт? Это действие нельзя отменить.');
+            if (!confirmed) return;
+
+            // 2. Блокируем кнопку на время запроса
+            deleteAccountBtn.disabled = true;
+            const originalText = deleteAccountBtn.textContent;
+            deleteAccountBtn.textContent = 'Удаление...';
+
+            try {
+                // 3. Отправляем POST запрос
+                const res = await API.post('/user/delete');
+
+                if (res && res.success) {
+                    alert('Аккаунт успешно удален.');
+                    // 4. Очищаем localStorage и перенаправляем на главную
+                    localStorage.removeItem('login');
+                    localStorage.removeItem('name');
+                    localStorage.removeItem('role');
+                    localStorage.removeItem('emoji');
+                    localStorage.removeItem('color');
+                    localStorage.removeItem('isAuthenticated');
+                    window.location.href = '/';
+                } else {
+                    alert(res?.message || 'Не удалось удалить аккаунт');
+                }
+            } catch (err) {
+                console.error('Ошибка удаления:', err);
+                alert(err.message || 'Ошибка сервера при удалении аккаунта');
+            } finally {
+                // Возвращаем кнопку в исходное состояние (если не было перехода)
+                deleteAccountBtn.disabled = false;
+                deleteAccountBtn.textContent = originalText;
+            }
+        });
+    }
+
     loadProfile();
 })();
