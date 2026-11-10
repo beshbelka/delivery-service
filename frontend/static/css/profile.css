@@ -537,6 +537,34 @@
     border-bottom: none;
 }
 
+/* Футер карточки заказа (Статус + Кнопка) */
+.order-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+}
+
+.order-card__footer .order-card__status {
+    padding: 0;
+    background: transparent;
+    border: none;
+    font-size: 0.95em;
+    color: var(--text-muted);
+    text-align: left;
+}
+
+/* Сама кнопка "Подробнее" */
+.order-card__footer .btn--sm {
+    padding: 8px 20px;
+    font-size: 14px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    margin: 0;
+}
+
 .item-qty {
     color: var(--text-muted);
     margin-left: auto;

@@ -1,0 +1,114 @@
+/* ---------- Order Details ---------- */
+.order-header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.order-status-badge {
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.order-status--created { background: var(--sky); color: #29536e; }
+.order-status--paid { background: var(--butter); color: #7a5a10; }
+.order-status--delivered { background: var(--mint); color: #3f6a56; }
+.order-status--cancelled { background: var(--rose); color: #8a2e40; }
+
+.order-part-block {
+    margin-bottom: 24px;
+}
+
+.order-part-block h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--border);
+}
+
+.order-item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    font-size: 15px;
+}
+
+.order-item-row span:first-child {
+    font-weight: 500;
+    flex-grow: 1;
+}
+
+.order-item-row span:nth-child(2) {
+    color: var(--text-muted);
+    margin: 0 20px;
+}
+
+.order-item-row span:last-child {
+    font-weight: 700;
+    min-width: 80px;
+    text-align: right;
+}
+
+.order-total-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    margin-top: 10px;
+    border-top: 2px solid var(--border);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.order-total-block span:last-child {
+    color: var(--mint-deep);
+    font-size: 24px;
+}
+
+.order-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 720px) {
+    .order-header-info { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .order-item-row { flex-wrap: wrap; }
+    .order-item-row span:last-child { width: 100%; text-align: left; margin-top: 4px; }
+}
+
+/* Футер аккордеона (статус + кнопка) */
+.order-card__footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+}
+
+/* Текст статуса */
+.order-card__footer .order-card__status {
+    padding: 0;
+    background: transparent;
+    border: none;
+    font-size: 0.95em;
+    color: var(--text-muted);
+}
+
+/* Кнопка "Подробнее" */
+.btn--sm {
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+}

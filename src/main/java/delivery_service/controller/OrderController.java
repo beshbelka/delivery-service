@@ -4,6 +4,7 @@ import delivery_service.ApiResponse;
 import delivery_service.DTO.response.OrdersResponse;
 import delivery_service.entity.Order;
 import delivery_service.entity.User;
+import delivery_service.exception.OrderNotFoundException;
 import delivery_service.service.AuthService;
 import delivery_service.service.OrderService;
 import delivery_service.service.TokenService;
@@ -11,13 +12,9 @@ import delivery_service.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -54,5 +51,19 @@ public class OrderController {
         data.put("count", response.count());
         data.put("orders", response.orders());
         return ApiResponse.success(data);
+    }
+
+    @GetMapping("/{id}")
+    public ApiResponse<Order> getOrder(@PathVariable Long id, Authentication authentication) {
+        String login = authentication.getName();
+        Order order = orderService.getUserOrder(login, id);
+        return ApiResponse.success(Map.of("order", order));
+    }
+
+    @PostMapping("/{id}/cancel")
+    public ApiResponse<Void> cancelOrder(@PathVariable Long id, Authentication authentication) {
+        String login = authentication.getName();
+        orderService.cancelOrder(id, login);
+        return ApiResponse.success();
     }
 }

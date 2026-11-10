@@ -370,6 +370,7 @@
 
         return `
             <div class="order-card">
+                <!-- Шапка для раскрытия/закрытия аккордеона -->
                 <div class="order-card__header" onclick="this.parentElement.classList.toggle('is-open')">
                     <div class="order-card__title">
                         <span class="order-arrow">▶</span>
@@ -378,9 +379,18 @@
                     <div class="order-card__sum">${order.totalPrice} ₽</div>
                 </div>
                 
+                <!-- Содержимое аккордеона -->
                 <div class="order-card__body">
                     ${itemsHtml}
-                    <div class="order-card__status">Статус: ${statusText}</div>
+                    
+                    <div class="order-card__footer">
+                        <div class="order-card__status">Статус: ${statusText}</div>
+                        
+                        <!-- КНОПКА ПЕРЕХОДА -->
+                        <a href="/order?id=${order.id}" class="btn btn--primary btn--sm" style="text-decoration: none;">
+                            Подробнее
+                        </a>
+                    </div>
                 </div>
             </div>
         `;

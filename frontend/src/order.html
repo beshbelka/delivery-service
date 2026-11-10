@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Детали заказа — Котобус</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="/css/order.css">
+    <script>
+        // Проверка авторизации
+        const flag = localStorage.getItem('isAuthenticated');
+        if (flag !== 'true') {
+            location.replace('/login');
+        }
+    </script>
+</head>
+<body>
+
+@@include('partials/header.html')
+
+<main class="profile">
+    <div class="container">
+        <div class="profile__head">
+            <a href="/profile" style="display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); text-decoration: none; margin-bottom: 12px; font-weight: 500; transition: color 0.2s;">
+                <span style="font-size: 1.2em;">←</span> В профиль
+            </a>
+            <h1 class="profile__title" id="orderTitle">Загрузка...</h1>
+            <p class="profile__subtitle" id="orderDate"></p>
+        </div>
+
+        <!-- Карточка заказа -->
+        <section class="profile-card" id="orderDetails">
+            <div class="bucket-empty"><p>Загрузка данных...</p></div>
+        </section>
+    </div>
+</main>
+
+@@include('partials/footer.html')
+
+<script src="/js/api.js"></script>
+<script src="/js/order.js"></script>
+</body>
+</html>

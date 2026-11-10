@@ -3,9 +3,7 @@ package delivery_service.service;
 import delivery_service.entity.*;
 import delivery_service.enums.ITEM_TYPE;
 import delivery_service.enums.ORDER_STATUS;
-import delivery_service.exception.CartIsEmptyException;
-import delivery_service.exception.IllegalSkuTypeException;
-import delivery_service.exception.ItemNotFoundException;
+import delivery_service.exception.*;
 import delivery_service.repository.OrderRepository;
 import delivery_service.repository.ServicesInterface;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -130,5 +129,23 @@ public class OrderService {
             }
         }
         return skus;
+    }
+
+    public Order getUserOrder(String login, Long id) {
+        Order order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
+        if (!Objects.equals(order.getUser().getLogin(), login)) throw new OrderNotFoundException();
+        return order;
+    }
+
+    public void cancelOrder(Long id, String login) {
+        Order order = orderRepository.findById(id).orElseThrow(OrderNotFoundException::new);
+        if (!Objects.equals(ORDER_STATUS.CREATED, order.getStatus())) throw new CannotCancelOrderException();
+        User user = userService.findByLogin(login);
+        if (!Objects.equals(order.getUser(), user)) throw new OrderNotFoundException();
+        for (OrderPart orderPart : order.getParts()) {
+            orderPart.setStatus(ORDER_STATUS.CANCELLED);
+        }
+        order.setStatus(ORDER_STATUS.CANCELLED);
+        orderRepository.save(order);
     }
 }
