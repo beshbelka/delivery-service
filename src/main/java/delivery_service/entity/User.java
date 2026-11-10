@@ -50,11 +50,18 @@ public class User implements UserDetails {
         return login;
     }
 
+    @Column(nullable = false)
+    private String emoji;
+    @Column(nullable = false)
+    private String color;
+
     public User (String login, String name, String password) {
         this.login = login;
         this.name = name;
         this.password = password;
         this.role = USER_ROLE.USER;
+        this.emoji = "🐙";
+        this.color = "#b8dcc6";
     }
 
     public String getFormattedRole() {

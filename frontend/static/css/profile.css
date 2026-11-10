@@ -107,7 +107,6 @@
     width: 160px;                      /* фиксированный аккуратный размер */
     height: 160px;
     border-radius: 50%;
-    background: var(--mint);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -455,7 +454,6 @@
 .order-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-md);
     margin-bottom: 12px;
     overflow: hidden;
     transition: box-shadow 0.2s;
@@ -558,4 +556,44 @@
     background: var(--surface);
     border-top: 1px solid var(--border);
     text-align: right;
+}
+
+/* ===== Выбор аватарки ===== */
+.avatar-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.avatar-picker__item {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background: var(--bg);
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s, border-color 0.1s;
+}
+
+.avatar-picker__item:hover {
+    transform: scale(1.1);
+}
+
+.avatar-picker__item--active {
+    border-color: var(--text);
+    box-shadow: 0 0 0 2px var(--surface);
+}
+
+/* Кружочки цветов */
+.color-picker__item {
+    border-radius: 50%;
+    border: 2px solid transparent;
+}
+.color-picker__item--active {
+    border-color: var(--text);
 }

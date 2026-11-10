@@ -42,25 +42,25 @@
 
             <div class="profile-info">
                 <div class="profile-avatar">
-                    <div class="profile-avatar__circle" id="avatarDisplay">🐙</div>
+                    <div class="profile-avatar__circle" id="avatarDisplay" style="visibility: hidden;"></div>
                 </div>
 
                 <div class="profile-fields">
                     <div class="field">
                         <span class="field__label">Логин</span>
-                        <span class="field__value" id="loginValue">—</span>
+                        <span class="field__value" id="loginValue"></span>
                     </div>
 
                     <div class="field field--editable">
                         <span class="field__label">Имя</span>
-                        <span class="field__value display-mode" id="nameDisplay">—</span>
+                        <span class="field__value display-mode" id="nameDisplay"></span>
                         <input type="text" class="field__input edit-mode" id="nameInput"
                                placeholder="Введите имя" style="display: none;">
                     </div>
 
                     <div class="field">
                         <span class="field__label">Роль</span>
-                        <span class="field__value field__value--role" id="roleValue">—</span>
+                        <span class="field__value field__value--role" id="roleValue"></span>
                     </div>
                 </div>
             </div>
@@ -130,6 +130,48 @@
 
             <div class="modal__actions">
                 <button type="button" class="btn btn--ghost" data-close="passwordModal">Отмена</button>
+                <button type="submit" class="btn btn--primary">Сохранить</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Модалка: редактирование профиля -->
+<div class="modal" id="editProfileModal" style="display: none;">
+    <div class="modal__overlay" data-close="editProfileModal"></div>
+    <div class="modal__window">
+        <div class="modal__header">
+            <h3 class="modal__title">Редактирование профиля</h3>
+            <button type="button" class="modal__close" data-close="editProfileModal">✕</button>
+        </div>
+        <form class="modal__body" id="editProfileForm">
+
+            <label class="modal__field">
+                <span class="field__label">Имя</span>
+                <input type="text" class="field__input" id="editName" required>
+            </label>
+
+            <div class="modal__field">
+                <span class="field__label">Выберите смайлик</span>
+                <div class="avatar-picker" id="emojiPicker">
+                    <!-- Смайлики будут вставлены через JS -->
+                </div>
+            </div>
+
+            <div class="modal__field">
+                <span class="field__label">Выберите цвет фона</span>
+                <div class="avatar-picker" id="colorPicker">
+                    <!-- Цвета будут вставлены через JS -->
+                </div>
+            </div>
+
+            <div class="modal__field">
+                <span class="field__label">Превью</span>
+                <div class="profile-avatar__circle" id="avatarPreview" style="width: 80px; height: 80px; font-size: 40px;">🐙</div>
+            </div>
+
+            <div class="modal__actions">
+                <button type="button" class="btn btn--ghost" data-close="editProfileModal">Отмена</button>
                 <button type="submit" class="btn btn--primary">Сохранить</button>
             </div>
         </form>

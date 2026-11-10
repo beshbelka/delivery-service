@@ -14,7 +14,7 @@
 
     let currentUser = null;
 
-// ---------- Password modal ----------
+    // ---------- Password modal ----------
     const pwdModal     = document.getElementById('passwordModal');
     const pwdForm      = document.getElementById('passwordForm');
     const pwdError     = document.getElementById('passwordError');
@@ -23,8 +23,6 @@
     const inpNew2      = document.getElementById('newPassword2');
     const changePwdBtn = document.getElementById('changePasswordBtn');
 
-// цвета из палитры style.css (rose-deep и border)
-    const COLOR_ERROR   = '#d16e83';
     const COLOR_INVALID = '#d16e83';
 
     function openModal(id) {
@@ -56,14 +54,12 @@
         clearPasswordError();
     }
 
-// Открытие
     changePwdBtn.addEventListener('click', () => {
         resetPasswordForm();
         openModal('passwordModal');
         inpCurrent.focus();
     });
 
-// Закрытие: overlay + крестик + кнопка «Отмена»
     pwdModal.addEventListener('click', (e) => {
         if (e.target.closest('[data-close="passwordModal"]')) {
             closeModal('passwordModal');
@@ -71,7 +67,6 @@
         }
     });
 
-// Закрытие по Esc
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && pwdModal.style.display === 'flex') {
             closeModal('passwordModal');
@@ -79,51 +74,35 @@
         }
     });
 
-// Валидация
     function validatePasswordForm() {
         clearPasswordError();
-
         const oldPass  = inpCurrent.value;
         const newPass1 = inpNew1.value;
         const newPass2 = inpNew2.value;
-
         let invalid = false;
 
-        if (oldPass.length < 6) {
-            inpCurrent.style.borderColor = COLOR_INVALID;
-            invalid = true;
-        }
-        if (newPass1.length < 6) {
-            inpNew1.style.borderColor = COLOR_INVALID;
-            invalid = true;
-        }
-        if (newPass2.length < 6) {
-            inpNew2.style.borderColor = COLOR_INVALID;
-            invalid = true;
-        }
+        if (oldPass.length < 6) { inpCurrent.style.borderColor = COLOR_INVALID; invalid = true; }
+        if (newPass1.length < 6) { inpNew1.style.borderColor = COLOR_INVALID; invalid = true; }
+        if (newPass2.length < 6) { inpNew2.style.borderColor = COLOR_INVALID; invalid = true; }
 
         if (invalid) {
             showPasswordError('Длина каждого пароля должна быть не менее 6 символов');
             return null;
         }
-
         if (newPass1 !== newPass2) {
             inpNew1.style.borderColor = COLOR_INVALID;
             inpNew2.style.borderColor = COLOR_INVALID;
             showPasswordError('Новые пароли не совпадают');
             return null;
         }
-
         if (newPass1 === oldPass) {
             inpNew1.style.borderColor = COLOR_INVALID;
             showPasswordError('Новый пароль должен отличаться от текущего');
             return null;
         }
-
         return { oldPass, newPass1, newPass2 };
     }
 
-// Снятие подсветки при вводе
     [inpCurrent, inpNew1, inpNew2].forEach(inp => {
         inp.addEventListener('input', () => {
             inp.style.borderColor = '';
@@ -131,10 +110,8 @@
         });
     });
 
-// Отправка
     pwdForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
         const payload = validatePasswordForm();
         if (!payload) return;
 
@@ -142,9 +119,7 @@
         submitBtn.disabled = true;
 
         try {
-            const res = await API.post('/auth/changePassword', payload);
-
-            // ApiResponse: { success, code, message, data }
+            const res = await API.post('/user/changePassword', payload);
             if (res && res.success === true) {
                 closeModal('passwordModal');
                 resetPasswordForm();
@@ -158,6 +133,94 @@
             submitBtn.disabled = false;
         }
     });
+
+    // ---------- Edit Profile Modal ----------
+    const editModal      = document.getElementById('editProfileModal');
+    const editForm       = document.getElementById('editProfileForm');
+    const editNameInput  = document.getElementById('editName');
+    const emojiPicker    = document.getElementById('emojiPicker');
+    const colorPicker    = document.getElementById('colorPicker');
+    const avatarPreview  = document.getElementById('avatarPreview');
+    const toggleEditBtn  = document.getElementById('toggleEditBtn');
+
+    const EMOJIS = ['🐱', '🍕', '🍔', '🚀', '💖', '🌸', '🍺', '🌿', '🐶', '🐼', '🍩', '☕'];
+    const COLORS = ['#b8dcc6', '#f7c4a8', '#cebce4', '#f5da9a', '#b3d6ea', '#f2bcc6', '#e0d5c4', '#e2ece9'];
+
+    let selectedEmoji = '🐙';
+    let selectedColor = '#b8dcc6';
+
+    function renderPickers() {
+        emojiPicker.innerHTML = EMOJIS.map(e =>
+            `<button type="button" class="avatar-picker__item ${e === selectedEmoji ? 'avatar-picker__item--active' : ''}" data-emoji="${e}">${e}</button>`
+        ).join('');
+
+        colorPicker.innerHTML = COLORS.map(c =>
+            `<button type="button" class="avatar-picker__item color-picker__item ${c === selectedColor ? 'color-picker__item--active' : ''}" style="background-color: ${c};" data-color="${c}"></button>`
+        ).join('');
+        updatePreview();
+    }
+
+    function updatePreview() {
+        avatarPreview.textContent = selectedEmoji;
+        avatarPreview.style.background = selectedColor;
+    }
+
+    editModal.addEventListener('click', (e) => {
+        const emojiBtn = e.target.closest('[data-emoji]');
+        if (emojiBtn) {
+            selectedEmoji = emojiBtn.dataset.emoji;
+            renderPickers();
+            return;
+        }
+        const colorBtn = e.target.closest('[data-color]');
+        if (colorBtn) {
+            selectedColor = colorBtn.dataset.color;
+            renderPickers();
+            return;
+        }
+        if (e.target.closest('[data-close="editProfileModal"]')) {
+            closeModal('editProfileModal');
+        }
+    });
+
+    toggleEditBtn.addEventListener('click', () => {
+        if (currentUser) {
+            editNameInput.value = currentUser.name || '';
+            selectedEmoji = currentUser.emoji || '🐙';
+            selectedColor = currentUser.color || '#b8dcc6';
+        }
+        renderPickers();
+        openModal('editProfileModal');
+    });
+
+    editForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitBtn = editForm.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+
+        try {
+            const payload = {
+                name: editNameInput.value.trim(),
+                emoji: selectedEmoji,
+                color: selectedColor
+            };
+            const res = await API.post('/user/editProfile', payload);
+            if (res && res.success) {
+                closeModal('editProfileModal');
+                localStorage.setItem('name', payload.name);
+                localStorage.setItem('emoji', payload.emoji);
+                localStorage.setItem('color', payload.color);
+                window.location.reload();
+            } else {
+                notify(res?.message || 'Не удалось сохранить профиль', true);
+            }
+        } catch (err) {
+            notify(err.message || 'Ошибка сервера', true);
+        } finally {
+            submitBtn.disabled = false;
+        }
+    });
+
 
     // ---------- Notification ----------
     function notify(message, isError = false) {
@@ -175,54 +238,51 @@
         const login = localStorage.getItem('login');
         const name  = localStorage.getItem('name');
         const role  = localStorage.getItem('role');
-
+        const emoji = localStorage.getItem('emoji');
+        const color = localStorage.getItem('color');
         if (!login || !name || !role) return null;
-
-        return { login, name, role };
+        return { login, name, role, emoji, color };
     }
 
     function cacheUser(user) {
         if (user.login) localStorage.setItem('login', user.login);
         if (user.name)  localStorage.setItem('name',  user.name);
         if (user.role)  localStorage.setItem('role',  user.role);
+        if (user.emoji) localStorage.setItem('emoji', user.emoji);
+        if (user.color) localStorage.setItem('color', user.color);
     }
 
     // ---------- Load profile ----------
     async function loadProfile() {
         const cached = readCachedUser();
-
         if (cached) {
             currentUser = cached;
             renderUser(currentUser);
-        } else {
-            try {
-                const res = await API.get('/auth/user');
+        }
 
-                // ApiResponse: { success, code, message, data: {login, name, role} }
-                if (!res || !res.success || !res.data) {
-                    notify((res && res.message) || 'Не удалось загрузить профиль', true);
-                    return;
-                }
-
-                const user = res.data;
-
-                if (!user.login || !user.name || !user.role) {
-                    notify('Профиль вернул неполные данные', true);
-                    return;
-                }
-
-                currentUser = {
-                    login: user.login,
-                    name:  user.name,
-                    role:  user.role,
-                };
-
-                cacheUser(currentUser);
-                renderUser(currentUser);
-            } catch (err) {
-                notify(err.message || 'Не удалось загрузить профиль', true);
+        try {
+            const res = await API.get('/user');
+            if (!res || !res.success || !res.data) {
+                if (!cached) notify((res && res.message) || 'Не удалось загрузить профиль', true);
                 return;
             }
+
+            const user = res.data;
+
+            currentUser = {
+                login: user.login,
+                name:  user.name,
+                role:  user.role,
+                emoji: user.emoji || '🐙',
+                color: user.color || '#b8dcc6'
+            };
+
+            cacheUser(currentUser);
+            renderUser(currentUser);
+
+        } catch (err) {
+            console.error('Ошибка загрузки профиля:', err);
+            if (!cached) notify(err.message || 'Не удалось загрузить профиль', true);
         }
 
         await loadOrders();
@@ -232,6 +292,13 @@
         els.login.textContent       = user.login || '—';
         els.nameDisplay.textContent = user.name  || '—';
         els.role.textContent        = user.role  || 'Пользователь';
+
+        const avatarDisplay = document.getElementById('avatarDisplay');
+        if (avatarDisplay) {
+            avatarDisplay.textContent = user.emoji || '🐙';
+            avatarDisplay.style.background = user.color || 'var(--mint)';
+            avatarDisplay.style.visibility = 'visible';
+        }
     }
 
     // ---------- Orders ----------
@@ -251,31 +318,23 @@
     }
 
     function renderOrders(orders, count = orders.length) {
-        // Обновляем счетчик в заголовке
         els.ordersCount.textContent = count;
-
-        // Очищаем список
         els.ordersList.innerHTML = '';
 
-        // Если заказов нет — показываем заглушку
         if (!orders.length) {
             els.ordersEmpty.style.display = 'flex';
             return;
         }
 
-        // Если заказы есть — скрываем заглушку и рендерим их
         els.ordersEmpty.style.display = 'none';
         els.ordersList.innerHTML = orders.map(orderTpl).join('');
     }
 
-    // Шаблон заказа с выпадающим списком
     function orderTpl(order) {
-        // Форматируем дату
         const date = new Date(order.createdAt).toLocaleDateString('ru-RU', {
             day: 'numeric', month: 'long', year: 'numeric'
         });
 
-        // Собираем список товаров
         let itemsHtml = '';
         if (order.parts) {
             order.parts.forEach(part => {
@@ -286,10 +345,8 @@
                     'PRODUCT': 'Продукты 🛒'
                 }[part.type] || part.type;
 
-                // Заголовок части
                 itemsHtml += `<div class="order-part-title">${typeName}</div>`;
 
-                // Товары в части
                 if (part.items) {
                     part.items.forEach(item => {
                         itemsHtml += `
@@ -304,7 +361,6 @@
             });
         }
 
-        // Статус заказа
         const statusText = {
             CREATED: 'Оформлен',
             PAID: 'Оплачен',
@@ -314,7 +370,6 @@
 
         return `
             <div class="order-card">
-                <!-- Шапка заказа (по клику открывается/закрывается) -->
                 <div class="order-card__header" onclick="this.parentElement.classList.toggle('is-open')">
                     <div class="order-card__title">
                         <span class="order-arrow">▶</span>
@@ -323,7 +378,6 @@
                     <div class="order-card__sum">${order.totalPrice} ₽</div>
                 </div>
                 
-                <!-- Выпадающий список с товарами -->
                 <div class="order-card__body">
                     ${itemsHtml}
                     <div class="order-card__status">Статус: ${statusText}</div>
@@ -346,6 +400,8 @@
                 localStorage.removeItem('login');
                 localStorage.removeItem('name');
                 localStorage.removeItem('role');
+                localStorage.removeItem('emoji');
+                localStorage.removeItem('color');
                 localStorage.removeItem('isAuthenticated');
                 window.location.href = '/';
             } else {

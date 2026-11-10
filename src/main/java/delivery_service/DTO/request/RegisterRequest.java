@@ -7,7 +7,7 @@ import org.hibernate.validator.constraints.Length;
 
 @PasswordMatches
 public record RegisterRequest(
-        @NotBlank @Length(min = 2, message = "Имя слишком короткое") String name,
+        @NotBlank @Length(min = 2, max = 50, message = "Длина имени от 2 до 50 символов") String name,
         @NotBlank String login,
         @NotBlank String password1,
         @NotBlank String password2

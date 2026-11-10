@@ -2,6 +2,7 @@ package delivery_service.controller;
 
 import delivery_service.ApiResponse;
 import delivery_service.DTO.request.ChangePasswordRequest;
+import delivery_service.DTO.request.EditProfileRequest;
 import delivery_service.DTO.request.LoginRequest;
 import delivery_service.DTO.request.RegisterRequest;
 import delivery_service.DTO.response.OrdersResponse;
@@ -45,17 +46,6 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/user")
-    public ApiResponse<String> getUserData(Authentication authentication) {
-        String login = authentication.getName();
-        UserDataResponse response = authService.getUserData(login);
-        Map<String, String> data = new HashMap<>(3);
-        data.put("login", response.login());
-        data.put("name", response.name());
-        data.put("role", response.role());
-        return ApiResponse.success(data);
-    }
-
     @PostMapping("/login")
     public ApiResponse<Void> login(@Valid @RequestBody LoginRequest loginRequest,
                                              HttpServletResponse response) {
@@ -72,27 +62,5 @@ public class AuthController {
         }
         tokenService.clearTokenCookie(response);
         return ApiResponse.success();
-    }
-
-    @PostMapping("/changePassword")
-    public ApiResponse<Void> changePassword(@Valid @RequestBody ChangePasswordRequest changePasswordRequest,
-                                      Authentication authentication,
-                                      HttpServletRequest request,
-                                      HttpServletResponse response) {
-        String oldPass = changePasswordRequest.oldPass();
-        String newPass1 = changePasswordRequest.newPass1();
-        String login = authentication.getName();
-        User user = authService.verifyPassword(login, oldPass);
-        if (user != null) {
-            authService.changePassword(user, newPass1);
-            String token = tokenService.extractTokenFromCookies(request);
-            blacklistService.add(token);
-            tokenService.clearTokenCookie(response);
-            token = tokenService.generateToken(login);
-            tokenService.addTokenCookie(response, token);
-            return ApiResponse.success();
-        } else {
-            return ApiResponse.error(400, "Старый пароль не совпадает");
-        }
     }
 }

@@ -146,4 +146,8 @@ public class TokenService {
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
     }
+
+    public String extractLoginFromCookies(HttpServletRequest request) {
+        return extractLogin(extractTokenFromCookies(request));
+    }
 }

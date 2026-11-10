@@ -42,15 +42,6 @@ public class AuthService {
         return tokenService.generateToken(request.login(), USER_ROLE.USER);
     }
 
-    public UserDataResponse getUserData(String login) {
-        User user = userRepository.findByLogin(login).orElseThrow(UserNotFoundException::new);
-        return new UserDataResponse(
-                user.getName(),
-                user.getLogin(),
-                user.getFormattedRole()
-        );
-    }
-
     public String login(LoginRequest request) {
         User user = userRepository.findByLogin(request.login()).orElseThrow(LoginFailedException::new);
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {

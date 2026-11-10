@@ -1,7 +1,7 @@
-INSERT INTO users (login, name, password, role) VALUES
-        ('userlogin', 'username', '$2a$10$rCxMoD7AFUJQKOkk7.E/zOtHRBicUO3XO.sqdIN5JrRvnss3bapUK', 'USER'),
-        ('adminlogin', 'adminame', '$2a$10$rCxMoD7AFUJQKOkk7.E/zOtHRBicUO3XO.sqdIN5JrRvnss3bapUK', 'ADMIN'),
-        ('managerlogin', 'managername', '$2a$10$rCxMoD7AFUJQKOkk7.E/zOtHRBicUO3XO.sqdIN5JrRvnss3bapUK', 'MANAGER')
+INSERT INTO users (login, name, password, role, emoji, color) VALUES
+        ('userlogin', 'username', '$2a$10$rCxMoD7AFUJQKOkk7.E/zOtHRBicUO3XO.sqdIN5JrRvnss3bapUK', 'USER', '🐱', '#b8dcc6'),
+        ('adminlogin', 'adminame', '$2a$10$rCxMoD7AFUJQKOkk7.E/zOtHRBicUO3XO.sqdIN5JrRvnss3bapUK', 'ADMIN', '🍕', '#f7c4a8'),
+        ('managerlogin', 'managername', '$2a$10$rCxMoD7AFUJQKOkk7.E/zOtHRBicUO3XO.sqdIN5JrRvnss3bapUK', 'MANAGER', '🍔', '#cebce4')
     ON CONFLICT (login) DO NOTHING;
 
 
